@@ -1,0 +1,26 @@
+{
+  "name": "community-era",
+  "version": "1.0.0",
+  "description": "Community-driven Infrastructure Monitoring Platform",
+  "main": "server.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd backend && npm run dev",
+    "client": "cd frontend && npm start",
+    "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "create-admin": "node scripts/create-admin.js"
+  },
+  "keywords": [
+    "infrastructure",
+    "monitoring",
+    "community"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "mongodb": "^7.0.0"
+  }
+}
