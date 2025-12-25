@@ -8,29 +8,31 @@ The Community Era is a community based service that allows individuals to report
 
 ## PROBLEM STATEMENT
 
-### PROBLEM
+### ⚠️ PROBLEM
 
-1.Public members will face challenges concerning local infrastructure (roads, water, and     
-  electricity).
-2.Lack of real-time information,prior ranking,project awareness on area-specific needs.
-3.There is a lack of transparency in projects, deadlines, and achievements being undertaken  
-  by or expected from local governance.
-4.There is low civic engagement in reporting and addressing public infrastructure problems   
-  because citizens feel their complaints are ignored or don’t see the impact of their participation.
+1. Public members will face challenges concerning local infrastructure (roads, water,and   
+electricity).
+2. Lack of real-time information,prior ranking,project awareness on area-specific needs.
+3. There is a lack of transparency in projects, deadlines, and achievements being undertaken 
+by or expected from local governance.
+4. There is low civic engagement in reporting and addressing public infrastructure problems  because citizens feel their complaints are ignored or don’t see the impact of their participation.
 
 ### EXISTING  SOLUTIONS
 
-1.CPGRAMS ( Centralized Public Grievance Redressal )
-  What it Does: It allows citizens to lodge complaints with government departments.
-  Limitations: Limited focus on urban, no voting/prioritization within a community, no    filtering of duplicate reports, no local project tracker, no civic awareness features.
+1. **CPGRAMS ( Centralized Public Grievance Redressal )**
+  **What it Does:**
+  It allows citizens to lodge complaints with government departments.
+  **Limitations:**
+  Limited focus on urban, no voting/prioritization within a community, no    filtering of duplicate reports, no local project tracker, no civic awareness features.
 
-2.IChangeMyCity
-  What it Does: It allows citizens to report civic issues in their city.
-  Limitations: Most of the membership is urban, semi-urban, and rural areas are not well-represented; there are no project milestones or deadlines, and voting on issues is not possible.
+2. **IChangeMyCity**
+  **What it Does:**
+  It allows citizens to report civic issues in their city.
+  **Limitations:** Most of the membership is urban, semi-urban, and rural areas are not well-represented; there are no project milestones or deadlines, and voting on issues is not possible.
 
-3.Local MLA/Municipal apps (Various states)
-  What it Does: It tracks certain development projects at the grassroots.
-  Limitations: Most usage is internal; the citizen's visibility is very poor, no comments, no upvotes; limited to urban wards. No civic awareness or pledge feature.
+3. **Local MLA/Municipal apps (Various states)**
+  **What it Does:** It tracks certain development projects at the grassroots.
+  **Limitations:** Most usage is internal; the citizen's visibility is very poor, no comments, no upvotes; limited to urban wards. No civic awareness or pledge feature.
 
 ## 💡 SOLUTION
  
