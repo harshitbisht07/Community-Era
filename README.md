@@ -156,6 +156,8 @@ community-era/
 ├── .gitignore
 └── package.json            # Root scripts (optional)
 
+```
+
 ## 🚧 Limitations
 
 - Depends upon active participation from the community: Lack of engagement from people using 
