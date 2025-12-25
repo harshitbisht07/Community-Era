@@ -17,22 +17,32 @@ electricity).
 by or expected from local governance.
 4. There is low civic engagement in reporting and addressing public infrastructure problems  because citizens feel their complaints are ignored or don’t see the impact of their participation.
 
-### EXISTING  SOLUTIONS
+## 🔍 EXISTING SOLUTIONS
 
-1. **CPGRAMS ( Centralized Public Grievance Redressal )**
-  **What it Does:**
-  It allows citizens to lodge complaints with government departments.
-  **Limitations:**
-  Limited focus on urban, no voting/prioritization within a community, no    filtering of duplicate reports, no local project tracker, no civic awareness features.
+### 1. CPGRAMS (Centralized Public Grievance Redressal)
 
-2. **IChangeMyCity**
-  **What it Does:**
-  It allows citizens to report civic issues in their city.
-  **Limitations:** Most of the membership is urban, semi-urban, and rural areas are not well-represented; there are no project milestones or deadlines, and voting on issues is not possible.
+**What it does:**  
+Allows citizens to lodge complaints with government departments.
 
-3. **Local MLA/Municipal apps (Various states)**
-  **What it Does:** It tracks certain development projects at the grassroots.
-  **Limitations:** Most usage is internal; the citizen's visibility is very poor, no comments, no upvotes; limited to urban wards. No civic awareness or pledge feature.
+**Limitations:**  
+Limited focus on urban areas, no voting or prioritization within a community, no duplicate report filtering, no local project tracker, and no civic awareness features.
+
+### 2. IChangeMyCity
+
+**What it does:**  
+Allows citizens to report civic issues in their city.
+
+**Limitations:**  
+Membership is mostly urban and semi-urban; rural areas are underrepresented. There are no project milestones or deadlines, and voting on issues is not possible.
+
+### 3. Local MLA / Municipal Apps (Various States)
+
+**What they do:**  
+Track certain development projects at the grassroots level.
+
+**Limitations:**  
+Usage is mostly internal; citizen visibility is very poor. There are no comments or upvotes, the scope is limited to urban wards, and there are no civic awareness or pledge features.
+
 
 ## 💡 SOLUTION
  
@@ -93,6 +103,7 @@ This system provides user these features -
 
 ## 📁 Project Structure
 
+```
 community-era/
 ├── backend/
 │   ├── controllers/        # Business logic (reports, projects, votes)
