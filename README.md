@@ -168,13 +168,19 @@ community-era/
 - Lack of Direct Government API Integration.All reports, as well as project information, are 
   community-submitted, making it difficult to automatically verify them or sync government data.
 
-## 🔮 Future Scope
+## 🔮 Future Scope - For Round 2
 
-- Government & municipal system integration for verified data and faster issue resolution.
-- AI-based duplicate detection and smart issue clustering for dense areas.
-- Mobile app expansion to increase adoption in semi-urban and rural regions.
-- Advanced analytics to predict recurring problems and infrastructure risks.
-- Real-time, location-based alerts for issue and project updates.
+#### End-to-End Issue Status Workflow
+- Implement a complete issue lifecycle (OPEN → ASSIGNED → IN_PROGRESS → RESOLVED) with admin-controlled status updates, timeline logs, and filter-based views for citizens and authorities to track progress transparently.
+
+#### Community Verification Mechanism
+- Introduce community-based Confirm / Deny actions to validate reported issues, compute a dynamic verificationScore, and enable sorting to improve trust and reduce fake or irrelevant reports.
+
+#### Analytics & Insights Dashboard
+- Build a data-driven dashboard using MongoDB aggregation pipelines to visualize category-wise trends, open vs resolved issues, user participation statistics, and average issue resolution time.
+
+#### Enhanced Duplicate Detection
+- Improve duplicate prevention by combining geographic radius checks with lightweight text similarity, suggesting existing issues to users before allowing new submissions.
 
 ## 🤝 Contributing
 
