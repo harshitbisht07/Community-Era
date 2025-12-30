@@ -4,6 +4,7 @@
 
 The Community Era is a community based service that allows individuals to report, verify and prioritize local infrastructure challenges through the use of collective intelligence. The Community Era also collects real-world data from those within the community and uses this information to identify and emphasize those infrastructure challenges that will have the greatest impact regardless of government or political entities.
 
+
 ## 🎯 Project Overview
 
 ## PROBLEM STATEMENT
@@ -17,37 +18,17 @@ electricity).
 by or expected from local governance.
 4. There is low civic engagement in reporting and addressing public infrastructure problems  because citizens feel their complaints are ignored or don’t see the impact of their participation.
 
-## 🔍 EXISTING SOLUTIONS
-
-### 1. CPGRAMS (Centralized Public Grievance Redressal)
-
-**What it does:**  
-Allows citizens to lodge complaints with government departments.
-
-**Limitations:**  
-Limited focus on urban areas, no voting or prioritization within a community, no duplicate report filtering, no local project tracker, and no civic awareness features.
-
-### 2. IChangeMyCity
-
-**What it does:**  
-Allows citizens to report civic issues in their city.
-
-**Limitations:**  
-Membership is mostly urban and semi-urban; rural areas are underrepresented. There are no project milestones or deadlines, and voting on issues is not possible.
-
-### 3. Local MLA / Municipal Apps (Various States)
-
-**What they do:**  
-Track certain development projects at the grassroots level.
-
-**Limitations:**  
-Usage is mostly internal; citizen visibility is very poor. There are no comments or upvotes, the scope is limited to urban wards, and there are no civic awareness or pledge features.
-
-
 ## 💡 SOLUTION
  
 The system is designed,so that the citizens and local authorities can work together at a distance to create an open,community based resource,for monitoring municipal infrastructure.
-This system provides user these features -
+
+- Community voting to prioritize issues locally.
+
+- Map-based reporting with radius-based duplicate prevention.
+
+- Public project timeline + milestones.
+
+- Participation dashboard (engagement stats).
 
 ## Core Features
 
@@ -78,6 +59,10 @@ This system provides user these features -
   - Area-based project listing (map pins / list view).
 
 
+<img width="676" height="762" alt="image" src="https://github.com/user-attachments/assets/fc33596e-736b-4b31-8a8f-8962e4ff7a41" />
+
+
+
 ## 🛠️ Tech Stack
 
 ### Frontend
@@ -106,55 +91,68 @@ This system provides user these features -
 ```
 community-era/
 ├── backend/
-│   ├── controllers/        # Business logic (reports, projects, votes)
-│   ├── models/             # MongoDB schemas
+│   ├── config/
+│   │   └── db.js                 
+│   ├── controllers/               
+│   │   ├── auth.controller.js
+│   │   ├── issues.controller.js
+│   │   ├── projects.controller.js
+│   │   └── votes.controller.js
+│   ├── middleware/
+│   │   ├── auth.middleware.js
+│   │   ├── role.middleware.js
+│   │   └── error.middleware.js
+│   ├── models/
 │   │   ├── User.js
-│   │   ├── Issue.js
-│   │   ├── Project.js
+│   │   ├── Issue.js              
+│   │   ├── Project.js            
 │   │   └── Vote.js
-│   ├── routes/             # API routes
+│   ├── routes/
 │   │   ├── auth.routes.js
 │   │   ├── issues.routes.js
 │   │   ├── projects.routes.js
 │   │   └── votes.routes.js
-│   ├── middleware/         # Auth, role, error handling
-│   │   ├── auth.middleware.js
-│   │   └── role.middleware.js
-│   ├── utils/              # Helper functions
-│   │   └── geoUtils.js     # Distance / duplicate detection logic
-│   ├── uploads/            # Images & videos (issues)
-│   ├── config/
-│   │   └── db.js           # MongoDB connection
-│   ├── server.js           # Entry point
-│   └── package.json
+│   ├── utils/
+│   │   └── geoUtils.js
+│   ├── uploads/
+│   │   ├── images/
+│   │   └── videos/
+│   ├── server.js
+│   ├── package.json
+│   └── package-lock.json
 │
 ├── frontend/
 │   ├── public/
-│   └── src/
-│       ├── components/     # Reusable UI components
-│       │   ├── Map/
-│       │   ├── IssueCard.jsx
-│       │   ├── ProjectCard.jsx
-│       │   └── Navbar.jsx
-│       ├── pages/          # Page-level components
-│       │   ├── Home.jsx
-│       │   ├── Issues.jsx
-│       │   ├── Projects.jsx
-│       │   ├── Dashboard.jsx
-│       │   └── Login.jsx
-│       ├── context/        # Auth & global state
-│       │   └── AuthContext.jsx
-│       ├── services/       # API calls
-│       │   └── api.js
-│       ├── hooks/          # Custom hooks
-│       │   └── useAuth.js
-│       ├── App.jsx
-│       └── main.jsx
+│   │   └── index.html
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Map/
+│   │   │   ├── IssueCard.jsx
+│   │   │   ├── ProjectCard.jsx
+│   │   │   └── Navbar.jsx
+│   │   ├── pages/
+│   │   │   ├── Home.jsx
+│   │   │   ├── Issues.jsx
+│   │   │   ├── Projects.jsx
+│   │   │   ├── Dashboard.jsx
+│   │   │   └── Login.jsx
+│   │   ├── context/
+│   │   │   └── AuthContext.jsx
+│   │   ├── hooks/
+│   │   │   └── useAuth.js
+│   │   ├── services/
+│   │   │   └── api.js
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── package.json
+│   └── package-lock.json
 │
-├── .env.example            # Environment variables template
-├── README.md               # Project documentation
+├── scripts/
+│   └── create-admin.js
+├── .env
 ├── .gitignore
-└── package.json            # Root scripts (optional)
+├── README.md
+└── package.json             
 
 ```
 

@@ -11,6 +11,17 @@ const Reports = () => {
   const [hasMore, setHasMore] = useState(true);
   const { user } = useAuthContext();
 
+  // Resolve image URL so it loads reliably in dev (proxy) and show a fallback if missing
+  const resolveImage = (url) => {
+    if (!url) return '';
+    // If the backend stored a relative path like "/uploads/...", fetch directly from backend in dev
+    if (url.startsWith('/uploads')) {
+      const backendBase = `${window.location.protocol}//${window.location.hostname}:5001`;
+      return `${backendBase}${url}`;
+    }
+    return url;
+  };
+
   useEffect(() => {
     fetchReports();
   }, [filter, page]);
@@ -155,6 +166,17 @@ const Reports = () => {
                     </span>
                   </div>
                   <p className="text-gray-600 mb-3">{report.description}</p>
+                  {report.images && report.images.length > 0 && (
+                    <img
+                      src={resolveImage(report.images[0])}
+                      alt="report"
+                      className="w-full max-h-80 object-cover rounded-md mb-3"
+                      onError={(e) => {
+                        // Gracefully handle missing files by showing a placeholder
+                        e.currentTarget.src = 'https://via.placeholder.com/800x400?text=Image+Unavailable';
+                      }}
+                    />
+                  )}
                   <div className="flex items-center space-x-4 text-sm text-gray-500">
                     <span className="flex items-center">
                       <FiMapPin className="mr-1" />
@@ -200,4 +222,3 @@ const Reports = () => {
 };
 
 export default Reports;
-
