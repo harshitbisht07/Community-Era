@@ -17,37 +17,17 @@ electricity).
 by or expected from local governance.
 4. There is low civic engagement in reporting and addressing public infrastructure problems  because citizens feel their complaints are ignored or don’t see the impact of their participation.
 
-## 🔍 EXISTING SOLUTIONS
-
-### 1. CPGRAMS (Centralized Public Grievance Redressal)
-
-**What it does:**  
-Allows citizens to lodge complaints with government departments.
-
-**Limitations:**  
-Limited focus on urban areas, no voting or prioritization within a community, no duplicate report filtering, no local project tracker, and no civic awareness features.
-
-### 2. IChangeMyCity
-
-**What it does:**  
-Allows citizens to report civic issues in their city.
-
-**Limitations:**  
-Membership is mostly urban and semi-urban; rural areas are underrepresented. There are no project milestones or deadlines, and voting on issues is not possible.
-
-### 3. Local MLA / Municipal Apps (Various States)
-
-**What they do:**  
-Track certain development projects at the grassroots level.
-
-**Limitations:**  
-Usage is mostly internal; citizen visibility is very poor. There are no comments or upvotes, the scope is limited to urban wards, and there are no civic awareness or pledge features.
-
-
 ## 💡 SOLUTION
  
 The system is designed,so that the citizens and local authorities can work together at a distance to create an open,community based resource,for monitoring municipal infrastructure.
-This system provides user these features -
+
+- Community voting to prioritize issues locally.
+
+- Map-based reporting with radius-based duplicate prevention.
+
+- Public project timeline + milestones.
+
+- Participation dashboard (engagement stats).
 
 ## Core Features
 
