@@ -4,6 +4,7 @@
 
 The Community Era is a community based service that allows individuals to report, verify and prioritize local infrastructure challenges through the use of collective intelligence. The Community Era also collects real-world data from those within the community and uses this information to identify and emphasize those infrastructure challenges that will have the greatest impact regardless of government or political entities.
 
+
 ## 🎯 Project Overview
 
 ## PROBLEM STATEMENT
@@ -56,6 +57,10 @@ The system is designed,so that the citizens and local authorities can work toget
   - Transparent progress tracking.
   - Citizens can comment and upvote projects/issues.
   - Area-based project listing (map pins / list view).
+
+
+<img width="676" height="762" alt="image" src="https://github.com/user-attachments/assets/fc33596e-736b-4b31-8a8f-8962e4ff7a41" />
+
 
 
 ## 🛠️ Tech Stack
