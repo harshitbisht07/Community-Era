@@ -59,7 +59,8 @@ The system is designed,so that the citizens and local authorities can work toget
   - Area-based project listing (map pins / list view).
 
 
-<img width="676" height="762" alt="image" src="https://github.com/user-attachments/assets/fc33596e-736b-4b31-8a8f-8962e4ff7a41" />
+<img width="1536" height="1024" alt="community era" src="https://github.com/user-attachments/assets/1f7a7f67-ac45-4755-9a45-969c57e19db4" />
+
 
 
 
