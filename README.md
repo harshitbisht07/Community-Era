@@ -1,4 +1,4 @@
-#🌍 Community Era
+## 🌍 Community Era
 
 **Community-driven Infrastructure Monitoring Platform**
 
