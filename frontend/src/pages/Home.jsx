@@ -1,8 +1,15 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { FiMap, FiFileText, FiBarChart2, FiUsers, FiClock } from 'react-icons/fi';
+import React from "react";
+import { Link } from "react-router-dom";
+import {
+  FiMap,
+  FiFileText,
+  FiBarChart2,
+  FiUsers,
+  FiClock,
+} from "react-icons/fi";
 
 const Home = () => {
+  const isLoggedIn = !!localStorage.getItem("token");
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Hero Section */}
@@ -14,8 +21,9 @@ const Home = () => {
           Community-driven Infrastructure Monitoring Platform
         </p>
         <p className="text-lg text-gray-500 max-w-3xl mx-auto">
-          Transform scattered complaints into structured, actionable infrastructure intelligence.
-          Report problems, validate priorities, and track progress through community participation.
+          Transform scattered complaints into structured, actionable
+          infrastructure intelligence. Report problems, validate priorities, and
+          track progress through community participation.
         </p>
       </div>
 
@@ -27,7 +35,8 @@ const Home = () => {
           </div>
           <h3 className="text-xl font-semibold mb-2">Problem Reporting</h3>
           <p className="text-gray-600 mb-4">
-            Report infrastructure issues with location, description, and severity level.
+            Report infrastructure issues with location, description, and
+            severity level.
           </p>
           <Link
             to="/map"
@@ -43,7 +52,8 @@ const Home = () => {
           </div>
           <h3 className="text-xl font-semibold mb-2">Priority Ranking</h3>
           <p className="text-gray-600 mb-4">
-            Vote on issues to help prioritize the most critical problems in your area.
+            Vote on issues to help prioritize the most critical problems in your
+            area.
           </p>
           <Link
             to="/reports"
@@ -57,7 +67,9 @@ const Home = () => {
           <div className="text-3xl mb-4 text-primary-600">
             <FiUsers />
           </div>
-          <h3 className="text-xl font-semibold mb-2">Participation Dashboard</h3>
+          <h3 className="text-xl font-semibold mb-2">
+            Participation Dashboard
+          </h3>
           <p className="text-gray-600 mb-4">
             Track community engagement and participation awareness in your area.
           </p>
@@ -75,7 +87,8 @@ const Home = () => {
           </div>
           <h3 className="text-xl font-semibold mb-2">Project Timelines</h3>
           <p className="text-gray-600 mb-4">
-            Transparent tracking of infrastructure projects with milestone deadlines.
+            Transparent tracking of infrastructure projects with milestone
+            deadlines.
           </p>
           <Link
             to="/reports"
@@ -92,14 +105,15 @@ const Home = () => {
           Ready to make a difference?
         </h2>
         <p className="text-gray-600 mb-6">
-          Join your community in identifying and prioritizing infrastructure issues.
+          Join your community in identifying and prioritizing infrastructure
+          issues.
         </p>
         <div className="space-x-4">
           <Link
-            to="/register"
+            to={isLoggedIn ? "/dashboard" : "/login"}
             className="inline-block px-6 py-3 bg-primary-600 text-white rounded-md hover:bg-primary-700 font-medium"
           >
-            Get Started
+            {isLoggedIn ? "Go to Dashboard" : "Get Started"}
           </Link>
           <Link
             to="/map"
@@ -114,4 +128,3 @@ const Home = () => {
 };
 
 export default Home;
-
