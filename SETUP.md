@@ -5,11 +5,12 @@
 ### 1. Install Dependencies
 
 ```bash
-# Install all dependencies (root, backend, frontend)
-npm run install-all
+# Install all dependencies and start(root, backend, frontend, start server)
+npm start
 ```
 
 Or manually:
+
 ```bash
 npm install
 cd backend && npm install && cd ..
@@ -19,11 +20,13 @@ cd frontend && npm install && cd ..
 ### 2. Setup MongoDB
 
 **Option A: Local MongoDB**
+
 - Install MongoDB from https://www.mongodb.com/try/download/community
 - Start MongoDB service
 - Default connection: `mongodb://localhost:27017/community-era`
 
 **Option B: MongoDB Atlas (Cloud)**
+
 - Create free account at https://www.mongodb.com/cloud/atlas
 - Create a cluster
 - Get connection string
@@ -32,6 +35,7 @@ cd frontend && npm install && cd ..
 ### 3. Configure Environment
 
 Create `backend/.env` file:
+
 ```env
 PORT=5000
 MONGODB_URI=mongodb://localhost:27017/community-era
@@ -40,6 +44,7 @@ NODE_ENV=development
 ```
 
 **Important:** Generate a secure JWT_SECRET:
+
 ```bash
 # On Linux/Mac
 openssl rand -base64 32
@@ -50,6 +55,7 @@ openssl rand -base64 32
 ### 4. Run the Application
 
 **Development Mode (Both servers):**
+
 ```bash
 npm run dev
 ```
@@ -57,12 +63,14 @@ npm run dev
 **Or separately:**
 
 Terminal 1 (Backend):
+
 ```bash
 cd backend
 npm run dev
 ```
 
 Terminal 2 (Frontend):
+
 ```bash
 cd frontend
 npm start
@@ -79,11 +87,12 @@ npm start
 1. Register a user through the web interface
 2. Open MongoDB shell or Compass
 3. Update user role:
+
 ```javascript
 db.users.updateOne(
   { email: "your-admin-email@example.com" },
   { $set: { role: "admin" } }
-)
+);
 ```
 
 ### 7. Test the Application
@@ -98,20 +107,25 @@ db.users.updateOne(
 ## Troubleshooting
 
 ### Port 3000 or 5000 already in use
+
 - Change PORT in backend/.env
 - Or kill the process using the port
 
 ### MongoDB connection error
+
 - Check if MongoDB is running
 - Verify MONGODB_URI in .env
 - Check MongoDB logs
 
 ### CORS errors
+
 - Ensure backend is running on port 5000
 - Check proxy setting in frontend/package.json
 
 ### Module not found errors
+
 - Delete node_modules and reinstall:
+
 ```bash
 rm -rf node_modules package-lock.json
 npm install
@@ -120,18 +134,20 @@ npm install
 ## Production Deployment
 
 ### Backend (Render/Vercel/Railway)
+
 1. Set environment variables
 2. Deploy backend code
 3. Update CORS to allow frontend domain
 
 ### Frontend (Vercel/Netlify)
+
 1. Update API URL in axios calls (or use environment variables)
 2. Build: `npm run build`
 3. Deploy build folder
 
 ### Environment Variables for Production
+
 - Use strong JWT_SECRET
 - Use MongoDB Atlas or managed MongoDB
 - Set NODE_ENV=production
 - Configure CORS properly
-
