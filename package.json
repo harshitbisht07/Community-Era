@@ -9,7 +9,7 @@
     "client": "cd frontend && npm start",
     "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
     "create-admin": "node scripts/create-admin.js",
-    "start": "npm install && cd backend && npm install && cd ../frontend && npm install && npm run dev"
+    "start": "npm install && cd backend && npm install && cd ../frontend && npm install && cd .. && npm run dev"
   },
   "keywords": [
     "infrastructure",
