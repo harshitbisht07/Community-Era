@@ -92,68 +92,55 @@ The system is designed,so that the citizens and local authorities can work toget
 ```
 community-era/
 ├── backend/
-│   ├── config/
-│   │   └── db.js                 
-│   ├── controllers/               
-│   │   ├── auth.controller.js
-│   │   ├── issues.controller.js
-│   │   ├── projects.controller.js
-│   │   └── votes.controller.js
-│   ├── middleware/
-│   │   ├── auth.middleware.js
-│   │   ├── role.middleware.js
-│   │   └── error.middleware.js
-│   ├── models/
+│   ├── controllers/        # Business logic (reports, projects, votes)
+│   ├── models/             # MongoDB schemas
 │   │   ├── User.js
-│   │   ├── Issue.js              
-│   │   ├── Project.js            
+│   │   ├── Issue.js
+│   │   ├── Project.js
 │   │   └── Vote.js
-│   ├── routes/
+│   ├── routes/             # API routes
 │   │   ├── auth.routes.js
 │   │   ├── issues.routes.js
 │   │   ├── projects.routes.js
 │   │   └── votes.routes.js
-│   ├── utils/
-│   │   └── geoUtils.js
-│   ├── uploads/
-│   │   ├── images/
-│   │   └── videos/
-│   ├── server.js
-│   ├── package.json
-│   └── package-lock.json
+│   ├── middleware/         # Auth, role, error handling
+│   │   ├── auth.middleware.js
+│   │   └── role.middleware.js
+│   ├── utils/              # Helper functions
+│   │   └── geoUtils.js     # Distance / duplicate detection logic
+│   ├── uploads/            # Images & videos (issues)
+│   ├── config/
+│   │   └── db.js           # MongoDB connection
+│   ├── server.js           # Entry point
+│   └── package.json
 │
 ├── frontend/
 │   ├── public/
-│   │   └── index.html
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── Map/
-│   │   │   ├── IssueCard.jsx
-│   │   │   ├── ProjectCard.jsx
-│   │   │   └── Navbar.jsx
-│   │   ├── pages/
-│   │   │   ├── Home.jsx
-│   │   │   ├── Issues.jsx
-│   │   │   ├── Projects.jsx
-│   │   │   ├── Dashboard.jsx
-│   │   │   └── Login.jsx
-│   │   ├── context/
-│   │   │   └── AuthContext.jsx
-│   │   ├── hooks/
-│   │   │   └── useAuth.js
-│   │   ├── services/
-│   │   │   └── api.js
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   ├── package.json
-│   └── package-lock.json
+│   └── src/
+│       ├── components/     # Reusable UI components
+│       │   ├── Map/
+│       │   ├── IssueCard.jsx
+│       │   ├── ProjectCard.jsx
+│       │   └── Navbar.jsx
+│       ├── pages/          # Page-level components
+│       │   ├── Home.jsx
+│       │   ├── Issues.jsx
+│       │   ├── Projects.jsx
+│       │   ├── Dashboard.jsx
+│       │   └── Login.jsx
+│       ├── context/        # Auth & global state
+│       │   └── AuthContext.jsx
+│       ├── services/       # API calls
+│       │   └── api.js
+│       ├── hooks/          # Custom hooks
+│       │   └── useAuth.js
+│       ├── App.jsx
+│       └── main.jsx
 │
-├── scripts/
-│   └── create-admin.js
-├── .env
+├── .env.example            # Environment variables template
+├── README.md               # Project documentation
 ├── .gitignore
-├── README.md
-└── package.json             
+└── package.json            # Root scripts (optional)
 
 ```
 
