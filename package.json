@@ -8,7 +8,8 @@
     "server": "cd backend && npm run dev",
     "client": "cd frontend && npm start",
     "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
-    "create-admin": "node scripts/create-admin.js"
+    "create-admin": "node scripts/create-admin.js",
+    "start": "npm install && cd backend && npm install && cd ../frontend && npm install && npm run dev"
   },
   "keywords": [
     "infrastructure",
