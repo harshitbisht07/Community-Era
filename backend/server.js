@@ -15,6 +15,7 @@ app.use("/api/reports", require("./routes/reports"));
 app.use("/api/votes", require("./routes/votes"));
 app.use("/api/participation", require("./routes/participation"));
 app.use("/api/projects", require("./routes/projects"));
+app.use("/api/admin", require("./routes/adminUsers"));
 
 // Health check
 app.get("/api/health", (req, res) => {
