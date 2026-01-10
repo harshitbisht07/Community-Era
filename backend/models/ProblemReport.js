@@ -54,6 +54,10 @@ const problemReportSchema = new mongoose.Schema({
     default: 'open'
   },
   images: [String],
+  isApproved: {
+    type: Boolean,
+    default: false
+  },
   createdAt: {
     type: Date,
     default: Date.now

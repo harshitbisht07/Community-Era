@@ -2,6 +2,7 @@ const express = require('express');
 const { body, validationResult, query } = require('express-validator');
 const ProblemReport = require('../models/ProblemReport');
 const { auth } = require('../middleware/auth');
+const upload = require('../middleware/upload');
 
 const router = express.Router();
 
@@ -17,33 +18,103 @@ router.get('/', [
     const limit = parseInt(req.query.limit) || 20;
     const skip = (page - 1) * limit;
 
-    const filter = {};
-    if (req.query.category) filter.category = req.query.category;
-    if (req.query.status) filter.status = req.query.status;
-
-    let sort = {};
-    switch (req.query.sort) {
-      case 'votes':
-        sort = { votes: -1 };
-        break;
-      case 'date':
-        sort = { createdAt: -1 };
-        break;
-      case 'severity':
-        const severityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
-        sort = { severity: -1 };
-        break;
-      default:
-        sort = { votes: -1, createdAt: -1 };
+    const matchStage = {};
+    if (req.query.category) matchStage.category = req.query.category;
+    if (req.query.status) matchStage.status = req.query.status;
+    if (req.query.search) {
+      matchStage.$or = [
+          { title: { $regex: req.query.search, $options: 'i' } },
+          { description: { $regex: req.query.search, $options: 'i' } }
+      ];
     }
 
-    const reports = await ProblemReport.find(filter)
-      .populate('reportedBy', 'username')
-      .sort(sort)
-      .skip(skip)
-      .limit(limit);
+    let sortStage = {};
+    switch (req.query.sort) {
+      case 'votes':
+        sortStage = { votes: -1 };
+        break;
+      case 'date':
+        sortStage = { createdAt: -1 };
+        break;
+      case 'severity':
+        sortStage = { severityWeight: -1 };
+        break;
+      default:
+        sortStage = { votes: -1, createdAt: -1 };
+    }
 
-    const total = await ProblemReport.countDocuments(filter);
+    const pipeline = [
+      { $match: matchStage },
+      // Add weight for severity sorting
+      {
+        $addFields: {
+          severityWeight: {
+            $switch: {
+              branches: [
+                { case: { $eq: ["$severity", "critical"] }, then: 4 },
+                { case: { $eq: ["$severity", "high"] }, then: 3 },
+                { case: { $eq: ["$severity", "medium"] }, then: 2 },
+                { case: { $eq: ["$severity", "low"] }, then: 1 }
+              ],
+              default: 0
+            }
+          }
+        }
+      },
+      { $sort: sortStage },
+      { $skip: skip },
+      { $limit: limit },
+      // Populate reportedBy (manual lookup for aggregation)
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'reportedBy',
+          foreignField: '_id',
+          pipeline: [{ $project: { username: 1 } }],
+          as: 'reportedBy'
+        }
+      },
+      { $unwind: { path: '$reportedBy', preserveNullAndEmptyArrays: true } },
+      // Duplicate Detection: Count similar reports nearby (~100m)
+      {
+        $lookup: {
+          from: 'problemreports',
+          let: { 
+            currentLat: "$location.coordinates.lat", 
+            currentLng: "$location.coordinates.lng", 
+            currentCat: "$category", 
+            currentId: "$_id" 
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$category", "$$currentCat"] },
+                    { $ne: ["$_id", "$$currentId"] },
+                    // Simple bounding box check (approx 100-111m)
+                    { $lt: [{ $abs: { $subtract: ["$location.coordinates.lat", "$$currentLat"] } }, 0.001] },
+                    { $lt: [{ $abs: { $subtract: ["$location.coordinates.lng", "$$currentLng"] } }, 0.001] }
+                  ]
+                }
+              }
+            },
+            { $count: "count" }
+          ],
+          as: "similarReports"
+        }
+      },
+      {
+        $addFields: {
+          similarReportCount: { 
+            $ifNull: [{ $arrayElemAt: ["$similarReports.count", 0] }, 0] 
+          }
+        }
+      }
+    ];
+
+    const reports = await ProblemReport.aggregate(pipeline);
+    const total = await ProblemReport.countDocuments(matchStage);
 
     res.json({
       reports,
@@ -79,13 +150,13 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create new report
-router.post('/', auth, [
+router.post('/', auth, upload.single('image'), [
   body('title').trim().isLength({ min: 5 }).withMessage('Title must be at least 5 characters'),
   body('description').trim().isLength({ min: 10 }).withMessage('Description must be at least 10 characters'),
   body('category').isIn(['road', 'water', 'electricity', 'sanitation', 'other']).withMessage('Invalid category'),
   body('severity').optional().isIn(['low', 'medium', 'high', 'critical']),
-  body('location.coordinates.lat').isFloat().withMessage('Valid latitude required'),
-  body('location.coordinates.lng').isFloat().withMessage('Valid longitude required')
+  body('lat').isFloat().withMessage('Valid latitude required'),
+  body('lng').isFloat().withMessage('Valid longitude required')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -93,10 +164,24 @@ router.post('/', auth, [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const report = new ProblemReport({
-      ...req.body,
-      reportedBy: req.user._id
-    });
+    const reportData = {
+        title: req.body.title,
+        description: req.body.description,
+        category: req.body.category,
+        severity: req.body.severity,
+        status: req.body.status || 'open',
+        location: {
+            coordinates: {
+                lat: parseFloat(req.body.lat),
+                lng: parseFloat(req.body.lng)
+            },
+            address: req.body.address
+        },
+        reportedBy: req.user._id,
+        images: req.file ? [`/uploads/${req.file.filename}`] : []
+    };
+
+    const report = new ProblemReport(reportData);
 
     await report.save();
     await report.populate('reportedBy', 'username');
@@ -155,4 +240,3 @@ router.delete('/:id', auth, async (req, res) => {
 });
 
 module.exports = router;
-
