@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuthContext } from '../hooks/useAuthContext';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthContext } from "../context/useAuthContext";
 
 const Login = () => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuthContext();
   const navigate = useNavigate();
@@ -15,14 +15,14 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
       await login(formData.email, formData.password);
-      navigate('/');
+      navigate("/");
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
+      setError(err.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -36,8 +36,11 @@ const Login = () => {
             Sign in to Community Era
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
-            <Link to="/register" className="font-medium text-primary-600 hover:text-primary-500">
+            Or{" "}
+            <Link
+              to="/register"
+              className="font-medium text-primary-600 hover:text-primary-500"
+            >
               create a new account
             </Link>
           </p>
@@ -89,7 +92,7 @@ const Login = () => {
               disabled={loading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
             >
-              {loading ? 'Signing in...' : 'Sign in'}
+              {loading ? "Signing in..." : "Sign in"}
             </button>
           </div>
         </form>
@@ -99,4 +102,3 @@ const Login = () => {
 };
 
 export default Login;
-

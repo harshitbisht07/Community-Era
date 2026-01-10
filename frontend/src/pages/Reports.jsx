@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useAuthContext } from "../hooks/useAuthContext";
+import { useAuthContext } from "../context/useAuthContext";
 import { FiThumbsUp, FiMapPin, FiAlertCircle, FiClock } from "react-icons/fi";
 
 const Reports = () => {
@@ -191,13 +191,12 @@ const Reports = () => {
                       alt="report"
                       className="w-full max-h-80 object-cover rounded-md mb-3"
                       onError={(e) => {
-                        // Gracefully handle missing files by showing a placeholder
                         e.currentTarget.src =
                           "https://via.placeholder.com/800x400?text=Image+Unavailable";
                       }}
                     />
                   )}
-                  <div className="flex items-center space-x-4 text-sm text-gray-500">
+                  <div className="flex items-center space-x-4 text-sm text-gray-500 mb-3">
                     <span className="flex items-center">
                       <FiMapPin className="mr-1" />
                       {report.location?.address || "Location not specified"}
@@ -207,6 +206,29 @@ const Reports = () => {
                       {new Date(report.createdAt).toLocaleDateString()}
                     </span>
                     <span>By {report.reportedBy?.username || "Anonymous"}</span>
+                  </div>
+
+                  {/* Status Indicator */}
+                  <div className="mt-2">
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                        report.status === "resolved" ||
+                        report.status === "closed"
+                          ? "bg-green-100 text-green-800 border-green-200"
+                          : report.status === "in-progress"
+                          ? "bg-blue-100 text-blue-800 border-blue-200"
+                          : "bg-orange-100 text-orange-800 border-orange-200"
+                      }`}
+                    >
+                      Status:{" "}
+                      {report.status === "in-progress"
+                        ? "On Work"
+                        : report.status === "resolved"
+                        ? "Completed"
+                        : report.status === "open"
+                        ? "Pending"
+                        : report.status}
+                    </span>
                   </div>
                 </div>
                 <button

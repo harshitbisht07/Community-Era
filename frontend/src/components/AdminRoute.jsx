@@ -1,6 +1,6 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
-import { useAuthContext } from '../hooks/useAuthContext';
+import React from "react";
+import { Navigate } from "react-router-dom";
+import { useAuthContext } from "../context/useAuthContext";
 
 const AdminRoute = ({ children }) => {
   const { user, loading } = useAuthContext();
@@ -20,7 +20,7 @@ const AdminRoute = ({ children }) => {
     return <Navigate to="/login" replace />;
   }
 
-  if (user.role !== 'admin') {
+  if (user.role !== "admin") {
     return <Navigate to="/" replace />;
   }
 
@@ -28,4 +28,3 @@ const AdminRoute = ({ children }) => {
 };
 
 export default AdminRoute;
-
