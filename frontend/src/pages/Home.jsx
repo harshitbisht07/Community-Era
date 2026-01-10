@@ -11,6 +11,7 @@ import {
   FiCheckCircle,
   FiActivity,
 } from "react-icons/fi";
+import Footer from "../components/Footer";
 
 const Home = () => {
   const { user } = useAuthContext();
@@ -197,6 +198,7 @@ const Home = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
