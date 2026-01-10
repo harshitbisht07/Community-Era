@@ -1,12 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { FiUsers, FiTrendingUp, FiFileText, FiThumbsUp, FiAlertCircle } from 'react-icons/fi';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import {
+  FiUsers,
+  FiTrendingUp,
+  FiFileText,
+  FiThumbsUp,
+  FiAlertCircle,
+} from "react-icons/fi";
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [areaStats, setAreaStats] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({ city: '', area: '' });
+  const [filters, setFilters] = useState({ city: "", area: "" });
 
   useEffect(() => {
     fetchStats();
@@ -16,13 +22,13 @@ const Dashboard = () => {
   const fetchStats = async () => {
     try {
       const params = new URLSearchParams();
-      if (filters.city) params.append('city', filters.city);
-      if (filters.area) params.append('area', filters.area);
+      if (filters.city) params.append("city", filters.city);
+      if (filters.area) params.append("area", filters.area);
 
       const res = await axios.get(`/api/participation?${params}`);
       setStats(res.data);
     } catch (error) {
-      console.error('Error fetching stats:', error);
+      console.error("Error fetching stats:", error);
     } finally {
       setLoading(false);
     }
@@ -31,19 +37,19 @@ const Dashboard = () => {
   const fetchAreaStats = async () => {
     try {
       const params = new URLSearchParams();
-      if (filters.city) params.append('city', filters.city);
+      if (filters.city) params.append("city", filters.city);
 
       const res = await axios.get(`/api/participation/by-area?${params}`);
       setAreaStats(res.data);
     } catch (error) {
-      console.error('Error fetching area stats:', error);
+      console.error("Error fetching area stats:", error);
     }
   };
 
   const getParticipationColor = (percentage) => {
-    if (percentage >= 70) return 'text-green-600 bg-green-100';
-    if (percentage >= 40) return 'text-yellow-600 bg-yellow-100';
-    return 'text-red-600 bg-red-100';
+    if (percentage >= 70) return "text-green-600 bg-green-100";
+    if (percentage >= 40) return "text-yellow-600 bg-yellow-100";
+    return "text-red-600 bg-red-100";
   };
 
   if (loading) {
@@ -59,7 +65,9 @@ const Dashboard = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Participation Awareness Dashboard</h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">
+        Participation Awareness Dashboard
+      </h1>
 
       {/* Filters */}
       <div className="bg-white rounded-lg shadow-md p-4 mb-6">
@@ -101,7 +109,9 @@ const Dashboard = () => {
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Total Users</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalUsers}</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {stats.totalUsers}
+                </p>
               </div>
             </div>
           </div>
@@ -112,20 +122,32 @@ const Dashboard = () => {
                 <FiTrendingUp className="text-green-600 text-2xl" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Participating Users</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.participatingUsers}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Total Reports
+                </p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {stats.participatingUsers}
+                </p>
               </div>
             </div>
           </div>
 
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="flex items-center">
-              <div className={`p-3 rounded-lg ${getParticipationColor(stats.participationPercentage)}`}>
+              <div
+                className={`p-3 rounded-lg ${getParticipationColor(
+                  stats.participationPercentage
+                )}`}
+              >
                 <FiAlertCircle className="text-2xl" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Participation Rate</p>
-                <p className="text-2xl font-bold">{stats.participationPercentage}%</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Participation Rate
+                </p>
+                <p className="text-2xl font-bold">
+                  {stats.participationPercentage}%
+                </p>
               </div>
             </div>
           </div>
@@ -136,8 +158,12 @@ const Dashboard = () => {
                 <FiFileText className="text-purple-600 text-2xl" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Recent Reports</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.recentActivity.reports}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Recent Reports
+                </p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {stats.recentActivity.reports}
+                </p>
                 <p className="text-xs text-gray-500">Last 30 days</p>
               </div>
             </div>
@@ -148,7 +174,9 @@ const Dashboard = () => {
       {/* Participation Progress Bar */}
       {stats && (
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Community Participation</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            Community Participation
+          </h2>
           <div className="mb-2">
             <div className="flex justify-between text-sm text-gray-600 mb-1">
               <span>Participation Progress</span>
@@ -158,17 +186,20 @@ const Dashboard = () => {
               <div
                 className={`h-4 rounded-full transition-all ${
                   stats.participationPercentage >= 70
-                    ? 'bg-green-500'
+                    ? "bg-green-500"
                     : stats.participationPercentage >= 40
-                    ? 'bg-yellow-500'
-                    : 'bg-red-500'
+                    ? "bg-yellow-500"
+                    : "bg-red-500"
                 }`}
-                style={{ width: `${Math.min(stats.participationPercentage, 100)}%` }}
+                style={{
+                  width: `${Math.min(stats.participationPercentage, 100)}%`,
+                }}
               ></div>
             </div>
           </div>
           <p className="text-sm text-gray-600 mt-4">
-            {stats.participatingUsers} out of {stats.totalUsers} registered users have participated
+            {stats.participatingUsers} requests received from {stats.totalUsers}{" "}
+            registered users
             {stats.location.city && ` in ${stats.location.city}`}
             {stats.location.area && `, ${stats.location.area}`}
           </p>
@@ -178,7 +209,9 @@ const Dashboard = () => {
       {/* Area-wise Breakdown */}
       {areaStats.length > 0 && (
         <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Participation by Area</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            Participation by Area
+          </h2>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
@@ -201,7 +234,7 @@ const Dashboard = () => {
                 {areaStats.map((area, index) => (
                   <tr key={index}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {area.area || 'Unknown'}
+                      {area.area || "Unknown"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {area.totalUsers}
@@ -210,7 +243,11 @@ const Dashboard = () => {
                       {area.participatingUsers}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getParticipationColor(area.participationPercentage)}`}>
+                      <span
+                        className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getParticipationColor(
+                          area.participationPercentage
+                        )}`}
+                      >
                         {area.participationPercentage}%
                       </span>
                     </td>
@@ -226,4 +263,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
