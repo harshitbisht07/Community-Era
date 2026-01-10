@@ -31,13 +31,13 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-md">
+    <nav className="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
             <Link
               to="/"
-              className="flex items-center px-2 py-2 text-xl font-bold text-primary-600"
+              className="flex items-center px-2 py-2 text-xl font-bold text-primary-600 tracking-tight"
             >
               🌍 Community Era
             </Link>
@@ -57,6 +57,13 @@ const Navbar = () => {
             </div>
           </div>
           <div className="flex items-center space-x-4">
+            <Link
+              to="/map"
+              className="hidden md:inline-flex items-center px-4 py-2 border border-transparent text-sm font-bold rounded-full shadow-md text-white bg-red-600 hover:bg-red-700 hover:scale-105 active:scale-95 transition-all mr-2"
+            >
+              <FiMap className="mr-2" /> Report Issue
+            </Link>
+
             {user ? (
               <>
                 {user.role === "admin" && (

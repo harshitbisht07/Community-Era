@@ -9,8 +9,36 @@ const router = express.Router();
  */
 router.get("/users", adminAuth, async (req, res) => {
   try {
-    const users = await User.find().select("-password");
-    res.json(users);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const search = req.query.search || "";
+    const skip = (page - 1) * limit;
+
+    const query = {};
+    if (search) {
+      query.$or = [
+        { username: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const users = await User.find(query)
+      .select("-password")
+      .sort({ lastActive: -1, createdAt: -1 }) // Sort by activity then creation
+      .skip(skip)
+      .limit(limit);
+
+    const total = await User.countDocuments(query);
+
+    res.json({
+      users,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit),
+      },
+    });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
@@ -19,15 +47,25 @@ router.get("/users", adminAuth, async (req, res) => {
 /**
  * Promote user to admin
  */
-router.patch("/users/:id/make-admin", adminAuth, async (req, res) => {
+/**
+ * Update user role (Promote/Demote)
+ */
+router.patch("/users/:id/role", adminAuth, async (req, res) => {
   try {
-    if (req.user._id.toString() === req.params.id) {
-      return res.status(400).json({ message: "You are already admin" });
+    const { role } = req.body;
+    if (!["user", "admin"].includes(role)) {
+      return res.status(400).json({ message: "Invalid role" });
+    }
+
+    if (req.user._id.toString() === req.params.id && role !== 'admin') {
+       // Optional: Prevent admins from demoting themselves to avoid lockout, 
+       // but strictly speaking, they might want to. Let's warn or allow.
+       // For safety, let's allow it but frontend should warn.
     }
 
     const user = await User.findByIdAndUpdate(
       req.params.id,
-      { role: "admin" },
+      { role },
       { new: true }
     ).select("-password");
 
@@ -35,12 +73,28 @@ router.patch("/users/:id/make-admin", adminAuth, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.json({
-      message: "User promoted to admin",
-      user,
-    });
+    res.json(user);
   } catch (err) {
     res.status(500).json({ message: "Server error" });
+  }
+});
+
+/**
+ * Promote user to admin (Legacy support, redirecting logic to above or keeping as alias)
+ */
+router.patch("/users/:id/make-admin", adminAuth, async (req, res) => {
+   // Reusing the role update logic specifically for admin promotion
+   req.body.role = 'admin';
+   // ... code duplication avoided by forwarding or just reimplementing simply:
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { role: "admin" },
+      { new: true }
+    ).select("-password");
+    res.json(user);
+  } catch(err) {
+      res.status(500).json({ message: "Server error" });
   }
 });
 

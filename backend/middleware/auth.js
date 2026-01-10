@@ -17,6 +17,10 @@ const auth = async (req, res, next) => {
     }
 
     req.user = user;
+    
+    // Update lastActive (fire and forget)
+    User.findByIdAndUpdate(user._id, { lastActive: new Date() }).catch(err => console.error('Error updating lastActive:', err));
+
     next();
   } catch {
     res.status(401).json({ message: "Invalid token" });
