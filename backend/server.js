@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
 require("dotenv").config();
 
 const app = express();
@@ -22,6 +23,17 @@ app.use("/api/admin", require("./routes/adminUsers"));
 app.get("/api/health", (req, res) => {
   res.json({ status: "OK", message: "Community Era API is running" });
 });
+
+// Serve frontend in production
+if (process.env.NODE_ENV === 'production') {
+  // Set static folder
+  app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+  // Any other route -> index.html
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+  });
+}
 
 // Global Error Handler
 app.use((err, req, res, next) => {

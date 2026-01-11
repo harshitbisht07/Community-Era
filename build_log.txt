@@ -1,0 +1,159 @@
+STDOUT:
+
+> community-era-frontend@1.0.0 build
+> react-scripts build
+
+Creating an optimized production build...
+Compiled with warnings.
+
+[eslint] 
+src\App.jsx
+  Line 17:8:  'ProtectedRoute' is defined but never used  no-unused-vars
+
+src\components\CommentSection.jsx
+  Line 3:35:  'FiUser' is defined but never used                                                                                no-unused-vars
+  Line 17:6:  React Hook useEffect has a missing dependency: 'fetchComments'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\components\Footer.jsx
+  Line 3:10:  'FiMap' is defined but never used        no-unused-vars
+  Line 3:17:  'FiBarChart2' is defined but never used  no-unused-vars
+  Line 3:30:  'FiGrid' is defined but never used       no-unused-vars
+  Line 3:38:  'FiHome' is defined but never used       no-unused-vars
+
+src\components\ReportForm.jsx
+  Line 4:8:  'L' is defined but never used  no-unused-vars
+
+src\pages\AdminDashboard.jsx
+  Line 1:38:    'useCallback' is defined but never used                                                                         no-unused-vars
+  Line 5:3:     'FiUsers' is defined but never used                                                                             no-unused-vars
+  Line 6:3:     'FiFileText' is defined but never used                                                                          no-unused-vars
+  Line 7:3:     'FiCheck' is defined but never used                                                                             no-unused-vars
+  Line 8:3:     'FiX' is defined but never used                                                                                 no-unused-vars
+  Line 12:3:    'FiAlertCircle' is defined but never used                                                                       no-unused-vars
+  Line 20:3:    'FiActivity' is defined but never used                                                                          no-unused-vars
+  Line 63:7:    'StatusPill' is assigned a value but never used                                                                 no-unused-vars
+  Line 93:10:   'btnLoading' is assigned a value but never used                                                                 no-unused-vars
+  Line 138:6:   React Hook useEffect has a missing dependency: 'refreshData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  Line 307:62:  Array.prototype.map() expects a value to be returned at the end of arrow function                               array-callback-return
+
+src\pages\Dashboard.jsx
+  Line 35:6:  React Hook useEffect has missing dependencies: 'fetchAreaStats' and 'fetchStats'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+src\pages\MapView.jsx
+  Line 1:38:   'useRef' is defined but never used                         no-unused-vars
+  Line 20:3:   'FiActivity' is defined but never used                     no-unused-vars
+  Line 21:3:   'FiThumbsUp' is defined but never used                     no-unused-vars
+  Line 23:3:   'FiClock' is defined but never used                        no-unused-vars
+  Line 24:3:   'FiFilter' is defined but never used                       no-unused-vars
+  Line 39:7:   'CATEGORY_COLORS' is assigned a value but never used       no-unused-vars
+  Line 167:9:  'handleLocationSelect' is assigned a value but never used  no-unused-vars
+
+src\pages\Reports.jsx
+  Line 8:3:   'FiAlertCircle' is defined but never used                                                                        no-unused-vars
+  Line 55:6:  React Hook useEffect has a missing dependency: 'fetchReports'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+File sizes after gzip:
+
+  234.9 kB  build\static\js\main.9a77ace3.js
+  7.81 kB   build\static\css\main.762a3e5b.css
+
+The project was built assuming it is hosted at /.
+You can control this with the homepage field in your package.json.
+
+The build folder is ready to be deployed.
+You may serve it with a static server:
+
+  npm install -g serve
+  serve -s build
+
+Find out more about deployment here:
+
+  https://cra.link/deployment
+
+
+
+STDERR:
+(node:14476) [DEP0176] DeprecationWarning: fs.F_OK is deprecated, use fs.constants.F_OK instead
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Starting build...
+
+> community-era-frontend@1.0.0 build
+> react-scripts build
+
+(node:19360) [DEP0176] DeprecationWarning: fs.F_OK is deprecated, use fs.constants.F_OK instead
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Creating an optimized production build...
+Compiled with warnings.
+
+[eslint] 
+src\App.jsx
+  Line 17:8:  'ProtectedRoute' is defined but never used  no-unused-vars
+
+src\components\CommentSection.jsx
+  Line 3:35:  'FiUser' is defined but never used                                                                                no-unused-vars
+  Line 17:6:  React Hook useEffect has a missing dependency: 'fetchComments'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\components\Footer.jsx
+  Line 3:10:  'FiMap' is defined but never used        no-unused-vars
+  Line 3:17:  'FiBarChart2' is defined but never used  no-unused-vars
+  Line 3:30:  'FiGrid' is defined but never used       no-unused-vars
+  Line 3:38:  'FiHome' is defined but never used       no-unused-vars
+
+src\components\ReportForm.jsx
+  Line 4:8:  'L' is defined but never used  no-unused-vars
+
+src\pages\AdminDashboard.jsx
+  Line 1:38:    'useCallback' is defined but never used                                                                         no-unused-vars
+  Line 5:3:     'FiUsers' is defined but never used                                                                             no-unused-vars
+  Line 6:3:     'FiFileText' is defined but never used                                                                          no-unused-vars
+  Line 7:3:     'FiCheck' is defined but never used                                                                             no-unused-vars
+  Line 8:3:     'FiX' is defined but never used                                                                                 no-unused-vars
+  Line 12:3:    'FiAlertCircle' is defined but never used                                                                       no-unused-vars
+  Line 20:3:    'FiActivity' is defined but never used                                                                          no-unused-vars
+  Line 63:7:    'StatusPill' is assigned a value but never used                                                                 no-unused-vars
+  Line 93:10:   'btnLoading' is assigned a value but never used                                                                 no-unused-vars
+  Line 138:6:   React Hook useEffect has a missing dependency: 'refreshData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  Line 307:62:  Array.prototype.map() expects a value to be returned at the end of arrow function                               array-callback-return
+
+src\pages\Dashboard.jsx
+  Line 35:6:  React Hook useEffect has missing dependencies: 'fetchAreaStats' and 'fetchStats'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+src\pages\MapView.jsx
+  Line 1:38:   'useRef' is defined but never used                         no-unused-vars
+  Line 20:3:   'FiActivity' is defined but never used                     no-unused-vars
+  Line 21:3:   'FiThumbsUp' is defined but never used                     no-unused-vars
+  Line 23:3:   'FiClock' is defined but never used                        no-unused-vars
+  Line 24:3:   'FiFilter' is defined but never used                       no-unused-vars
+  Line 39:7:   'CATEGORY_COLORS' is assigned a value but never used       no-unused-vars
+  Line 167:9:  'handleLocationSelect' is assigned a value but never used  no-unused-vars
+
+src\pages\Reports.jsx
+  Line 8:3:   'FiAlertCircle' is defined but never used                                                                        no-unused-vars
+  Line 55:6:  React Hook useEffect has a missing dependency: 'fetchReports'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+File sizes after gzip:
+
+  234.9 kB  build\static\js\main.9a77ace3.js
+  7.81 kB   build\static\css\main.762a3e5b.css
+
+The project was built assuming it is hosted at /.
+You can control this with the homepage field in your package.json.
+
+The build folder is ready to be deployed.
+You may serve it with a static server:
+
+  npm install -g serve
+  serve -s build
+
+Find out more about deployment here:
+
+  https://cra.link/deployment
+
+
+Child process exited with code 0
