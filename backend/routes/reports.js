@@ -178,7 +178,9 @@ router.post('/', auth, upload.single('image'), [
             address: req.body.address
         },
         reportedBy: req.user._id,
-        images: req.file ? [`/uploads/${req.file.filename}`] : []
+        images: req.file 
+          ? [`data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`] 
+          : []
     };
 
     const report = new ProblemReport(reportData);
