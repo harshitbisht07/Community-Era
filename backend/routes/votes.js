@@ -86,4 +86,3 @@ router.get('/check/:reportId', auth, async (req, res) => {
 });
 
 module.exports = router;
-
