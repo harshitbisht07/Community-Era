@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/useAuthContext";
 import { FiUser, FiMail, FiLock, FiMapPin, FiArrowRight } from "react-icons/fi";
@@ -27,6 +28,7 @@ const Register = () => {
 
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
@@ -47,13 +49,15 @@ const Register = () => {
         password: formData.password,
         location,
       });
+      toast.success("Account created successfully!");
       navigate("/");
     } catch (err) {
-      setError(
+      const msg =
         err.response?.data?.message ||
-          err.response?.data?.errors?.[0]?.msg ||
-          "Registration failed"
-      );
+        err.response?.data?.errors?.[0]?.msg ||
+        "Registration failed";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }

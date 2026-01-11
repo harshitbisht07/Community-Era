@@ -1,190 +1,156 @@
-## 🌍 Community Era
+# 🌍 Community Era
 
-**Community-driven Infrastructure Monitoring Platform**
+**Community Era** is a comprehensive civic engagement platform designed to empower citizens and local authorities to collaborate on infrastructure improvements. By combining geospatial reporting, real-time data visualization, and community voting, we turn complaints into actionable data.
 
-The Community Era is a community based service that allows individuals to report, verify and prioritize local infrastructure challenges through the use of collective intelligence. The Community Era also collects real-world data from those within the community and uses this information to identify and emphasize those infrastructure challenges that will have the greatest impact regardless of government or political entities.
+![Community Era](./frontend/public/logo192.png)
+_(Replace with actual screenshot if available)_
 
+---
 
-## 🎯 Project Overview
+## 🚀 Key Features
 
-## PROBLEM STATEMENT
+### For Citizens 👥
 
-### ⚠️ PROBLEM
+- **📍 Geospatial Reporting**: Report issues (potholes, garbage, water leaks) by pinning them directly on an interactive map.
+- **📸 Evidence Upload**: Attach photos to reports to provide clear evidence.
+- **👍 Community Validation**: Upvote and comment on existing reports to highlight urgency.
+- **📊 Personal Dashboard**: Track your impact score, view filed reports, and manage your profile.
+- **🗺️ Smart Clustering**: The map automatically clusters nearby reports to prevent clutter and show heatmaps of problem areas.
 
-1. Public members will face challenges concerning local infrastructure (roads, water,and   
-electricity).
-2. Lack of real-time information,prior ranking,project awareness on area-specific needs.
-3. There is a lack of transparency in projects, deadlines, and achievements being undertaken 
-by or expected from local governance.
-4. There is low civic engagement in reporting and addressing public infrastructure problems  because citizens feel their complaints are ignored or don’t see the impact of their participation.
+### For Authorities (Admin) 👮
 
-## 💡 SOLUTION
- 
-The system is designed,so that the citizens and local authorities can work together at a distance to create an open,community based resource,for monitoring municipal infrastructure.
+- **🖥️ Command Center**: A centralized Admin Dashboard to view all incoming reports with filtering capabilities.
+- **📈 Analytics Engine**: Visual charts (Bar/Pie) displaying issue distribution by category, severity, and status.
+- **✅ Status Management**: Update report lifecycles (`Open` → `In Progress` → `Resolved`) to keep citizens informed.
+- **🚧 Project Timelines**: Manage larger infrastructure projects with dedicated timelines (if applicable).
+- **👥 User Management**: Monitor user activity and manage permissions.
 
-- Community voting to prioritize issues locally.
+---
 
-- Map-based reporting with radius-based duplicate prevention.
+## 🛠️ Technology Stack
 
-- Public project timeline + milestones.
+### Frontend (Client)
 
-- Participation dashboard (engagement stats).
+- **Framework**: [React.js](https://reactjs.org/) (Create React App)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) for a modern, responsive design.
+- **Mapping**: [Leaflet](https://leafletjs.com/) & [React-Leaflet](https://react-leaflet.js.org/) for OpenStreetMap integration.
+- **Visualization**: [Recharts](https://recharts.org/) for admin analytics.
+- **State Management**: React Context API (`AuthContext`).
+- **Icons**: React Icons (Feather Icons).
 
-## Core Features
+### Backend (Server)
 
-### 1.Neighborhood Infrastructure Problem Report
-  - Map-based Location Selection (50-100m Duplicate Prevention)
-  - Classification of category and intensity
-  - Display of reports for public attention
-  - Citizens can report Road, Water, Electricity, Sanitation, etc.
-  - Photo & Video Upload feature providing pictorial evidence of problems
+- **Runtime**: [Node.js](https://nodejs.org/)
+- **Framework**: [Express.js](https://expressjs.com/) for RESTful API routing.
+- **Database**: [MongoDB](https://www.mongodb.com/) (with Mongoose ODM) & Geospatial Indexing (`2dsphere`).
+- **Authentication**: JSON Web Tokens (JWT) & bcryptjs for security.
+- **File Handling**: Multer (Memory Storage) for processing image uploads.
+- **Image Processing**: Base64 encoding for image storage (configurable to cloud storage).
 
-### 2. Community Priority Ranking (Voting)
-  - Upvote issues to prioritize them
-  - Most-voted issues appear at the top
-  - Visual vote count indicators
-  - Helps authorities identify high-impact problems.
+---
 
-### 3. Participation Awareness Dashboard
-  - Total registered users in an area.
-  - Number of participating users.
-  - Motivates civic engagement & tracks trends.
+## ⚙️ Installation & Setup Guide
 
-### 4. Public Accountability Timeline
-  - Admin-managed infrastructure projects.
-  - Milestone tracking with deadlines.
-  - Automatic status updates (on-time/delayed).
-  - Transparent progress tracking.
-  - Citizens can comment and upvote projects/issues.
-  - Area-based project listing (map pins / list view).
+Follow these steps to run the application locally.
 
+### Prerequisites
 
-<img width="1536" height="1024" alt="community era" src="https://github.com/user-attachments/assets/1f7a7f67-ac45-4755-9a45-969c57e19db4" />
+- Node.js (v16.0.0 or higher)
+- MongoDB (Running locally or via MongoDB Atlas connection string)
+- Git
 
+### 1. Clone the Repository
 
+```bash
+git clone https://github.com/yourusername/community-era.git
+cd community-era
+```
 
+### 2. Backend Configuration
 
-## 🛠️ Tech Stack
+Navigate to the `backend` directory and install dependencies:
 
-### Frontend
-- **React** - Component-based UI
-- **Tailwind CSS** - Rapid styling
-- **Leaflet + OpenStreetMap** - Free mapping solution
-- **React Router** - Navigation
-- **Axios** - API Communication with Backend
+```bash
+cd backend
+npm install
+```
 
-### Backend
-- **Node.js + Express** - REST API
-- **MongoDB + Mongoose** - Database
-- **Multer** - Image & video upload handling (issue reporting)
-- **JWT** - Authentication
-- **bcryptjs** - Password hashing
-- **express-validator** - Input validation
+Create a `.env` file in the `backend/` directory with the following variables:
 
-## 📋 Prerequisites
+```env
+PORT=5001
+MONGODB_URI=mongodb://localhost:27017/community_era
+JWT_SECRET=your_super_secret_jwt_key_here
+NODE_ENV=development
+```
 
-- Node.js (v14 or higher)
-- MongoDB (local or cloud instance)
-- npm or yarn
+Start the Backend Server:
 
-## 📁 Project Structure
+```bash
+npm run dev
+# The server will start on http://localhost:5001
+```
+
+### 3. Frontend Configuration
+
+Open a new terminal, navigate to the `frontend` directory and install dependencies:
+
+```bash
+cd frontend
+npm install
+```
+
+Start the Frontend Application:
+
+```bash
+npm start
+# The application will open in your browser at http://localhost:3000
+```
+
+---
+
+## 📂 System Architecture
+
+### Database Models
+
+- **User**: Stores auth details, roles (`user`/`admin`), and location data.
+- **ProblemReport**: The core entity containing title, description, location (GeoJSON), severity, status (`open`, `resolved`, etc.), and images.
+- **Vote**: Tracks user endorsements for reports to prevent double-voting.
+- **Comment**: Enables threaded discussions on specific reports.
+- **ProjectTimeline**: (Backend readiness) For tracking long-term infrastructure project milestones.
+
+### Directory Structure
 
 ```
 community-era/
 ├── backend/
-│   ├── controllers/        # Business logic (reports, projects, votes)
-│   ├── models/             # MongoDB schemas
-│   │   ├── User.js
-│   │   ├── Issue.js
-│   │   ├── Project.js
-│   │   └── Vote.js
-│   ├── routes/             # API routes
-│   │   ├── auth.routes.js
-│   │   ├── issues.routes.js
-│   │   ├── projects.routes.js
-│   │   └── votes.routes.js
-│   ├── middleware/         # Auth, role, error handling
-│   │   ├── auth.middleware.js
-│   │   └── role.middleware.js
-│   ├── utils/              # Helper functions
-│   │   └── geoUtils.js     # Distance / duplicate detection logic
-│   ├── uploads/            # Images & videos (issues)
-│   ├── config/
-│   │   └── db.js           # MongoDB connection
-│   ├── server.js           # Entry point
-│   └── package.json
+│   ├── middleware/   # Auth verification & File Upload logic
+│   ├── models/       # Mongoose Schemas
+│   ├── routes/       # API Route Controllers
+│   └── server.js     # App Entry point
 │
 ├── frontend/
-│   ├── public/
+│   ├── public/       # Static assets
 │   └── src/
-│       ├── components/     # Reusable UI components
-│       │   ├── Map/
-│       │   ├── IssueCard.jsx
-│       │   ├── ProjectCard.jsx
-│       │   └── Navbar.jsx
-│       ├── pages/          # Page-level components
-│       │   ├── Home.jsx
-│       │   ├── Issues.jsx
-│       │   ├── Projects.jsx
-│       │   ├── Dashboard.jsx
-│       │   └── Login.jsx
-│       ├── context/        # Auth & global state
-│       │   └── AuthContext.jsx
-│       ├── services/       # API calls
-│       │   └── api.js
-│       ├── hooks/          # Custom hooks
-│       │   └── useAuth.js
-│       ├── App.jsx
-│       └── main.jsx
-│
-├── .env.example            # Environment variables template
-├── README.md               # Project documentation
-├── .gitignore
-└── package.json            # Root scripts (optional)
-
+│       ├── components/ # Reusable UI definitions (Navbar, AuthModal, etc.)
+│       ├── context/    # Global State (Authentication)
+│       └── pages/      # Route Views (Home, MapView, Profile, etc.)
 ```
-
-## 🚧 Limitations
-
-- Depends upon active participation from the community: Lack of engagement from people using 
-  it can lead to erroneous prioritization of issues.
-- Duplicate report detection range is limited:50-100m works well,but a potential problem 
-  could exist in heavily populated areas.
-- The project timelines & milestones need admin intervention.
-- Lack of Direct Government API Integration.All reports, as well as project information, are 
-  community-submitted, making it difficult to automatically verify them or sync government data.
-
-## 🔮 Future Scope - For Round 2
-
-#### End-to-End Issue Status Workflow
-- Implement a complete issue lifecycle (OPEN → ASSIGNED → IN_PROGRESS → RESOLVED) with admin-controlled status updates, timeline logs, and filter-based views for citizens and authorities to track progress transparently.
-
-#### Community Verification Mechanism
-- Introduce community-based Confirm / Deny actions to validate reported issues, compute a dynamic verificationScore, and enable sorting to improve trust and reduce fake or irrelevant reports.
-
-#### Analytics & Insights Dashboard
-- Build a data-driven dashboard using MongoDB aggregation pipelines to visualize category-wise trends, open vs resolved issues, user participation statistics, and average issue resolution time.
-
-#### Enhanced Duplicate Detection
-- Improve duplicate prevention by combining geographic radius checks with lightweight text similarity, suggesting existing issues to users before allowing new submissions.
-
-## 🤝 Contributing
-
-This is a project demonstration. Feel free to fork and extend!
-
-## 📝 License
-
-MIT License
-
-## 🐛 Troubleshooting
-
-This project is currently under development. Demo data is used and some features are in progress.
-
-## 📞 Support
-
-For issues or questions, please open an issue in the repository.
 
 ---
 
-**Built with ❤️ for community-driven infrastructure monitoring**
+## 🤝 Contributing
 
+We welcome contributions to make our cities better!
+
+1.  Fork the Project.
+2.  Create your Feature Branch (`git checkout -b feature/NewFeature`).
+3.  Commit your Changes (`git commit -m 'Add some NewFeature'`).
+4.  Push to the Branch (`git push origin feature/NewFeature`).
+5.  Open a Pull Request.
+
+---
+
+## 📜 License
+
+Distributed under the MIT License. See `LICENSE` for more information.

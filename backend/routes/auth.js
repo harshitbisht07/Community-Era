@@ -58,6 +58,7 @@ router.post(
           email: user.email,
           role: user.role,
           location: user.location,
+          profileImage: user.profileImage,
         },
       });
     } catch (error) {
@@ -110,6 +111,7 @@ router.post(
           email: user.email,
           role: user.role,
           location: user.location,
+          profileImage: user.profileImage,
         },
       });
     } catch (error) {
@@ -126,6 +128,101 @@ router.get("/me", auth, async (req, res) => {
     res.json(user);
   } catch (error) {
     console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Get profile stats
+router.get("/profile-stats", auth, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const ProblemReport = require("../models/ProblemReport");
+
+    const [totalReports, resolvedReports, impactStats] = await Promise.all([
+      ProblemReport.countDocuments({ reportedBy: userId }),
+      ProblemReport.countDocuments({ reportedBy: userId, status: "resolved" }),
+      ProblemReport.aggregate([
+        { $match: { reportedBy: userId } },
+        { $group: { _id: null, totalVotes: { $sum: "$votes" } } },
+      ]),
+    ]);
+
+    const recentActivity = await ProblemReport.find({ reportedBy: userId })
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .select("title status createdAt category votes");
+
+    res.json({
+      totalReports,
+      resolvedReports,
+      impactScore: impactStats[0]?.totalVotes || 0,
+      recentActivity,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Delete account
+router.delete("/me", auth, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const ProblemReport = require("../models/ProblemReport");
+    const Vote = require("../models/Vote");
+
+    // Optional: Anonymize reports instead of deleting?
+    // For now, let's keep reports but unlink user (or just leave as is, populated as null if user gone)
+    // Actually, if we delete user, populated 'reportedBy' might return null.
+
+    // delete user
+    await User.findByIdAndDelete(userId);
+
+    // remove all votes by user
+    await Vote.deleteMany({ user: userId });
+
+    // We can choose to delete reports or keep them. keeping them for community value.
+    
+    res.json({ message: "Account deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Update Profile
+router.put("/profile", auth, [
+  body("username").trim().isLength({ min: 3 }).withMessage("Username must be at least 3 characters")
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+       return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { username, profileImage } = req.body;
+    const userId = req.user._id;
+
+    // Check uniqueness if changing
+    if (username !== req.user.username) {
+       const existing = await User.findOne({ username });
+       if (existing) {
+         return res.status(400).json({ message: "Username already taken" });
+       }
+    }
+
+    const updates = { username };
+    if (profileImage !== undefined) updates.profileImage = profileImage;
+
+    const user = await User.findByIdAndUpdate(
+      userId, 
+      updates, 
+      { new: true }
+    ).select("-password");
+
+    res.json(user);
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 });

@@ -21,6 +21,7 @@ import {
 import SkeletonLoader from "../components/SkeletonLoader";
 import StatusPill from "../components/StatusPill";
 import CommentSection from "../components/CommentSection";
+import AuthModal from "../components/AuthModal";
 
 const Reports = () => {
   // Data State
@@ -117,8 +118,15 @@ const Reports = () => {
     return `${d.toFixed(1)}km away`;
   };
 
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  // ... existing code
+
   const handleVote = async (reportId) => {
-    if (!user) return alert("Please login to vote");
+    if (!user) {
+      setShowAuthModal(true);
+      return;
+    }
 
     const report = reports.find((r) => r._id === reportId);
     if (!report) return;
@@ -134,6 +142,7 @@ const Reports = () => {
         return {
           ...r,
           votes: isVoted ? Math.max(0, r.votes - 1) : r.votes + 1,
+          totalVotes: (r.totalVotes || 0) + (isVoted ? -1 : 1),
           voters: isVoted
             ? r.voters.filter((v) => (v._id || v) !== userId)
             : [...r.voters, { _id: userId }],
@@ -403,7 +412,10 @@ const Reports = () => {
                 {/* Comment Section */}
                 {expandedComments.includes(report._id) && (
                   <div onClick={(e) => e.stopPropagation()}>
-                    <CommentSection reportId={report._id} />
+                    <CommentSection
+                      reportId={report._id}
+                      onAuthRequired={() => setShowAuthModal(true)}
+                    />
                   </div>
                 )}
               </div>
@@ -434,6 +446,7 @@ const Reports = () => {
           </div>
         )}
       </div>
+
       {/* Cluster Details Modal */}
       {selectedCluster && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[3000] flex items-center justify-center p-4">
@@ -506,6 +519,12 @@ const Reports = () => {
           </div>
         </div>
       )}
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+      />
     </div>
   );
 };

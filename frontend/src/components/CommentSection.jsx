@@ -3,7 +3,7 @@ import axios from "axios";
 import { FiSend, FiMessageSquare, FiUser } from "react-icons/fi";
 import { useAuthContext } from "../context/useAuthContext";
 
-const CommentSection = ({ reportId }) => {
+const CommentSection = ({ reportId, onAuthRequired }) => {
   const { user } = useAuthContext();
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
@@ -95,8 +95,11 @@ const CommentSection = ({ reportId }) => {
           </div>
         </form>
       ) : (
-        <div className="text-center py-4 bg-gray-50 rounded-xl mb-4 text-sm text-gray-500">
-          Please log in to participate in the discussion.
+        <div
+          onClick={onAuthRequired}
+          className="cursor-pointer text-center py-4 bg-blue-50 hover:bg-blue-100 rounded-xl mb-4 text-sm text-blue-600 font-bold border border-blue-100 transition-colors"
+        >
+          Login to participate in the discussion
         </div>
       )}
 

@@ -39,7 +39,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white/80 backdrop-blur-md sticky top-0 z-[9999] shadow-sm transition-all">
+    <nav className="bg-white/80 backdrop-blur-md sticky top-0 z-[9999] shadow-sm transition-all border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
@@ -49,7 +49,7 @@ const Navbar = () => {
             >
               🌍 Community Era
             </Link>
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+            <div className="hidden md:ml-8 md:flex md:space-x-2 items-center">
               <Link to="/" className={getLinkClass("/")}>
                 <FiHome className="mr-1" /> Home
               </Link>
@@ -65,12 +65,12 @@ const Navbar = () => {
             </div>
           </div>
 
-          <div className="hidden sm:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-3">
             <Link
               to="/map"
-              className="hidden sm:inline-flex items-center px-3 py-1.5 md:px-4 md:py-2 border border-transparent text-xs md:text-sm font-bold rounded-full shadow-md text-white bg-red-600 hover:bg-red-700 hover:scale-105 active:scale-95 transition-all mr-2"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-bold rounded-full shadow-md text-white bg-red-600 hover:bg-red-700 hover:scale-105 active:scale-95 transition-all mr-2"
             >
-              <FiMap className="mr-1 md:mr-2" /> Report Issue
+              <FiMap className="mr-2" /> Report Issue
             </Link>
 
             {user ? (
@@ -78,9 +78,9 @@ const Navbar = () => {
                 {user.role === "admin" && (
                   <Link
                     to="/admin"
-                    className={`inline-flex items-center px-3 py-2 text-sm font-medium ${
+                    className={`inline-flex items-center px-3 py-2 text-sm font-medium transition-colors rounded-full hover:bg-gray-50 ${
                       location.pathname.startsWith("/admin")
-                        ? "text-primary-600"
+                        ? "text-primary-600 bg-blue-50"
                         : "text-gray-700 hover:text-primary-600"
                     }`}
                   >
@@ -88,12 +88,16 @@ const Navbar = () => {
                   </Link>
                 )}
 
-                <span className="text-sm text-gray-700">
-                  <FiUser className="inline mr-1" /> {user.username}
-                </span>
+                <Link
+                  to="/profile"
+                  className="flex items-center gap-1 text-sm text-gray-700 font-medium px-2 hover:text-blue-600 hover:bg-blue-50 py-1 rounded-lg transition-colors"
+                >
+                  <FiUser className="inline" /> {user.username}
+                </Link>
+
                 <button
                   onClick={handleLogout}
-                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary-600"
+                  className="inline-flex items-center px-4 py-2 text-sm font-bold text-gray-700 hover:text-red-600 bg-gray-50 hover:bg-red-50 rounded-full transition-all"
                 >
                   <FiLogOut className="mr-1" /> Logout
                 </button>
@@ -102,13 +106,13 @@ const Navbar = () => {
               <>
                 <Link
                   to="/login"
-                  className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary-600"
+                  className="px-4 py-2 text-sm font-bold text-gray-700 hover:text-primary-600 hover:bg-gray-50 rounded-full transition-all"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700"
+                  className="px-5 py-2 text-sm font-bold text-white bg-primary-600 rounded-full hover:bg-primary-700 hover:shadow-lg hover:-translate-y-0.5 transition-all"
                 >
                   Register
                 </Link>
@@ -117,10 +121,10 @@ const Navbar = () => {
           </div>
 
           {/* Mobile menu button */}
-          <div className="flex items-center sm:hidden">
+          <div className="flex items-center md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-primary-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
+              className="inline-flex items-center justify-center p-2 rounded-xl text-gray-700 hover:text-primary-600 hover:bg-gray-100 focus:outline-none transition-colors"
             >
               <span className="sr-only">Open main menu</span>
               {isOpen ? (
@@ -134,7 +138,11 @@ const Navbar = () => {
       </div>
 
       {/* Mobile menu */}
-      <div className={`${isOpen ? "block" : "hidden"} sm:hidden`}>
+      <div
+        className={`${
+          isOpen ? "block" : "hidden"
+        } md:hidden bg-white/95 backdrop-blur-md absolute top-16 left-0 right-0 shadow-lg border-b border-gray-100 transition-all z-[9990]`}
+      >
         <div className="pt-2 pb-3 space-y-1 px-4">
           {/* Mobile Report Button */}
           <Link
