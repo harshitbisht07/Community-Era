@@ -81,7 +81,12 @@ const ICONS = {
 
 // COMPONENTS
 
-const MapLogic = ({ onLocationSelected, user, initialCenter }) => {
+const MapLogic = ({
+  onLocationSelected,
+  onUnauthClick,
+  user,
+  initialCenter,
+}) => {
   const map = useMap();
   useEffect(() => {
     if (initialCenter)
@@ -91,12 +96,7 @@ const MapLogic = ({ onLocationSelected, user, initialCenter }) => {
   useMapEvents({
     click(e) {
       if (!user) {
-        L.popup()
-          .setLatLng(e.latlng)
-          .setContent(
-            '<div class="text-center font-bold">Login required to report.</div>'
-          )
-          .openOn(map);
+        onUnauthClick(e.latlng);
         return;
       }
       onLocationSelected(e.latlng);
@@ -121,6 +121,7 @@ const MapView = () => {
 
   // UI State
   const [selectedLocation, setSelectedLocation] = useState(null); // For new report
+  const [loginPopupPosition, setLoginPopupPosition] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -203,14 +204,49 @@ const MapView = () => {
         />
 
         {/* Internal Logic that needs useMap */}
+
         <MapLogic
           onLocationSelected={(latlng) => {
             setSelectedLocation(latlng);
             setShowForm(true);
+            setLoginPopupPosition(null);
+          }}
+          onUnauthClick={(latlng) => {
+            setLoginPopupPosition(latlng);
+            setSelectedLocation(null);
           }}
           user={user}
           initialCenter={location.state?.center}
         />
+
+        {/* Auth Required Popup */}
+        {loginPopupPosition && (
+          <Popup
+            position={loginPopupPosition}
+            onClose={() => setLoginPopupPosition(null)}
+          >
+            <div className="p-2 text-center min-w-[200px] font-sans">
+              <h3 className="font-bold text-gray-900 mb-2">Login Required</h3>
+              <p className="text-xs text-gray-500 mb-4">
+                You must be logged in to report an issue.
+              </p>
+              <div className="flex flex-col gap-2">
+                <Link
+                  to="/login"
+                  className="block w-full py-2 bg-blue-600 !text-white font-bold rounded-lg text-xs hover:bg-blue-700 transition-colors shadow-sm"
+                >
+                  Log In
+                </Link>
+                <Link
+                  to="/register"
+                  className="block w-full py-2 bg-gray-100 text-gray-700 font-bold rounded-lg text-xs hover:bg-gray-200 transition-colors border border-gray-200"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            </div>
+          </Popup>
+        )}
 
         {/* FlyTo Handler for Search */}
         <SearchController selectedLocation={selectedLocation} />
