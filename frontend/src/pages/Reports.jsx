@@ -115,28 +115,37 @@ const Reports = () => {
   const handleVote = async (reportId) => {
     if (!user) return alert("Please login to vote");
 
+    const report = reports.find((r) => r._id === reportId);
+    if (!report) return;
+
+    const userId = user._id || user.id;
+    // Check if user has voted using more robust ID comparison
+    const isVoted = report.voters.some((v) => (v._id || v) === userId);
+
     // Optimistic Update
     setReports((prev) =>
       prev.map((r) => {
         if (r._id !== reportId) return r;
-        const isVoted = r.voters.some((v) => (v._id || v) === user.id);
         return {
           ...r,
-          votes: isVoted ? r.votes - 1 : r.votes + 1,
+          votes: isVoted ? Math.max(0, r.votes - 1) : r.votes + 1,
           voters: isVoted
-            ? r.voters.filter((v) => (v._id || v) !== user.id)
-            : [...r.voters, { _id: user.id }],
+            ? r.voters.filter((v) => (v._id || v) !== userId)
+            : [...r.voters, { _id: userId }],
         };
       })
     );
 
     try {
-      const hasVoted = await axios.get(`/api/votes/check/${reportId}`);
-      if (hasVoted.data.hasVoted) await axios.delete(`/api/votes/${reportId}`);
-      else await axios.post("/api/votes", { reportId });
+      if (isVoted) {
+        await axios.delete(`/api/votes/${reportId}`);
+      } else {
+        await axios.post("/api/votes", { reportId });
+      }
     } catch (error) {
+      console.error("Vote failed", error);
       alert("Failed to vote");
-      fetchReports();
+      fetchReports(); // Revert on error
     }
   };
 
@@ -330,14 +339,18 @@ const Reports = () => {
                       handleVote(report._id);
                     }}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all active:scale-95 z-10 ${
-                      report.voters?.some((v) => (v._id || v) === user?.id)
+                      report.voters?.some(
+                        (v) => (v._id || v) === (user?._id || user?.id)
+                      )
                         ? "bg-blue-600 text-white shadow-md shadow-blue-200"
                         : "bg-gray-50 text-gray-600 hover:bg-white hover:border-gray-200 hover:shadow border border-transparent"
                     }`}
                   >
                     <FiThumbsUp
                       className={
-                        report.voters?.some((v) => (v._id || v) === user?.id)
+                        report.voters?.some(
+                          (v) => (v._id || v) === (user?._id || user?.id)
+                        )
                           ? "fill-current"
                           : ""
                       }
