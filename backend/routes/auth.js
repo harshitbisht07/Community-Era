@@ -45,7 +45,7 @@ router.post(
       await user.save();
 
       // Generate token
-      const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || "fallback-secret", {
         expiresIn: "7d",
       });
 
