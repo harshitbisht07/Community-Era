@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FiX, FiAlertTriangle, FiImage } from "react-icons/fi";
 import L from "leaflet";
@@ -13,6 +13,45 @@ const ReportForm = ({ location, onClose, onSubmitted, reports }) => {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [addressDetails, setAddressDetails] = useState({
+    city: "",
+    area: "",
+    display_name: "",
+  });
+
+  useEffect(() => {
+    const fetchAddressDetails = async () => {
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${location.lat}&lon=${location.lng}`
+        );
+        const data = await res.json();
+        const address = data.address || {};
+
+        // Extract city/area
+        const city =
+          address.city ||
+          address.town ||
+          address.village ||
+          address.county ||
+          "";
+        const area =
+          address.suburb || address.neighbourhood || address.road || "";
+
+        setAddressDetails({
+          city,
+          area,
+          display_name: data.display_name,
+        });
+      } catch (err) {
+        console.error("Failed to fetch address details:", err);
+      }
+    };
+
+    if (location) {
+      fetchAddressDetails();
+    }
+  }, [location]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -21,27 +60,23 @@ const ReportForm = ({ location, onClose, onSubmitted, reports }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
-    // --- 1. SAME CATEGORY DUPLICACY CHECK REMOVED ---
-    // We now allow submission so the backend can cluster these reports together.
-
     setLoading(true);
 
-    // --- 2. PREPARE DATA FOR BACKEND ---
     const data = new FormData();
     data.append("title", formData.title);
     data.append("description", formData.description);
     data.append("category", formData.category);
     data.append("severity", formData.severity);
     data.append("status", "open");
-
-    // Append flat location data for easier backend parsing
     data.append("lat", parseFloat(location.lat.toFixed(6)));
     data.append("lng", parseFloat(location.lng.toFixed(6)));
     data.append(
       "address",
-      `Lat: ${location.lat.toFixed(6)}, Lng: ${location.lng.toFixed(6)}`
+      addressDetails.display_name ||
+        `Lat: ${location.lat.toFixed(6)}, Lng: ${location.lng.toFixed(6)}`
     );
+    data.append("city", addressDetails.city);
+    data.append("area", addressDetails.area);
 
     if (image) {
       data.append("image", image);
@@ -49,14 +84,13 @@ const ReportForm = ({ location, onClose, onSubmitted, reports }) => {
 
     try {
       await axios.post("/api/reports", data);
-      onSubmitted(); // This triggers the success toast in MapView
+      onSubmitted();
     } catch (err) {
       console.error(err);
       if (
         err.response?.data?.errors &&
         Array.isArray(err.response.data.errors)
       ) {
-        // Handle express-validator errors
         const errorMsg = err.response.data.errors.map((e) => e.msg).join(", ");
         setError(errorMsg);
       } else {
@@ -75,7 +109,9 @@ const ReportForm = ({ location, onClose, onSubmitted, reports }) => {
           <div>
             <h2 className="text-xl font-bold text-gray-800">New Report</h2>
             <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">
-              Infrastructure Issue
+              {addressDetails.city && addressDetails.area
+                ? `${addressDetails.area}, ${addressDetails.city}`
+                : "Infrastructure Issue"}
             </p>
           </div>
           <button

@@ -17,6 +17,7 @@ const Home = () => {
   const { user } = useAuthContext();
   const isLoggedIn = !!user;
 
+  const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalReports: 0,
     resolutionRate: 0,
@@ -35,6 +36,8 @@ const Home = () => {
         });
       } catch (err) {
         console.error("Failed to fetch home stats", err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchStats();
@@ -136,7 +139,7 @@ const Home = () => {
             </div>
             <div>
               <p className="text-4xl font-extrabold text-gray-900">
-                {stats.totalReports > 0 ? stats.totalReports : "120+"}
+                {loading ? "..." : stats.totalReports}
               </p>
               <p className="text-lg text-gray-500 font-medium">
                 Issues Reported
@@ -149,7 +152,7 @@ const Home = () => {
             </div>
             <div>
               <p className="text-4xl font-extrabold text-gray-900">
-                {stats.resolutionRate > 0 ? `${stats.resolutionRate}%` : "65%"}
+                {loading ? "..." : `${stats.resolutionRate}%`}
               </p>
               <p className="text-lg text-gray-500 font-medium">
                 Resolution Rate
@@ -162,9 +165,7 @@ const Home = () => {
             </div>
             <div>
               <p className="text-4xl font-extrabold text-gray-900">
-                {stats.activeCities > 0
-                  ? `${stats.activeCities} Cities`
-                  : "4 Cities"}
+                {loading ? "..." : `${stats.activeCities} Cities`}
               </p>
               <p className="text-lg text-gray-500 font-medium">
                 Active Communities

@@ -158,7 +158,7 @@ router.post('/', auth, upload.single('image'), [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { category, lat, lng } = req.body;
+    const { category, lat, lng, city, area } = req.body;
     const coordinates = { lat: parseFloat(lat), lng: parseFloat(lng) };
 
     // Check for clustering (duplicate within 100m)
@@ -182,7 +182,9 @@ router.post('/', auth, upload.single('image'), [
         status: req.body.status || 'open',
         location: {
             coordinates: coordinates,
-            address: req.body.address
+            address: req.body.address,
+            city: req.body.city || '',
+            area: req.body.area || ''
         },
         reportedBy: req.user._id,
         images: req.file 
