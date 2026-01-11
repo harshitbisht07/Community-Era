@@ -25,20 +25,15 @@ router.post('/', auth, [
       return res.status(404).json({ message: 'Report not found' });
     }
 
-    // Check if already voted
-    const existingVote = await Vote.findOne({ report: reportId, user: userId });
-    if (existingVote) {
-      return res.status(400).json({ message: 'Already voted on this report' });
-    }
-
-    // Create vote
+    // Create vote - rely on unique index to prevent duplicates
     const vote = new Vote({ report: reportId, user: userId });
     await vote.save();
 
-    // Update report vote count
-    report.votes += 1;
-    report.voters.push(userId);
-    await report.save();
+    // atomically update report
+    await ProblemReport.findByIdAndUpdate(reportId, {
+      $inc: { votes: 1 },
+      $addToSet: { voters: userId }
+    });
 
     res.status(201).json({ message: 'Vote recorded', vote });
   } catch (error) {
@@ -62,13 +57,11 @@ router.delete('/:reportId', auth, async (req, res) => {
       return res.status(404).json({ message: 'Vote not found' });
     }
 
-    // Update report vote count
-    const report = await ProblemReport.findById(reportId);
-    if (report) {
-      report.votes = Math.max(0, report.votes - 1);
-      report.voters = report.voters.filter(v => v.toString() !== userId.toString());
-      await report.save();
-    }
+    // atomically update report
+    await ProblemReport.findByIdAndUpdate(reportId, {
+      $inc: { votes: -1 },
+      $pull: { voters: userId }
+    });
 
     res.json({ message: 'Vote removed' });
   } catch (error) {
@@ -93,4 +86,3 @@ router.get('/check/:reportId', auth, async (req, res) => {
 });
 
 module.exports = router;
-
