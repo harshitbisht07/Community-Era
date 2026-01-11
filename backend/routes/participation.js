@@ -41,8 +41,11 @@ router.get('/', async (req, res) => {
        });
        participatingUsers = residentParticipants;
     } else if (!city && !area) {
-        // If no location filter, all participating users count
-        participatingUsers = allParticipatingUserIds.length;
+        // If no location filter, only count participating users who VALIDLY EXIST in the database
+        // This prevents "Ghost" participation (deleted users) from causing >100% stats
+        participatingUsers = await User.countDocuments({
+            _id: { $in: allParticipatingUserIds }
+        });
     }
 
     // Calculate participation percentage

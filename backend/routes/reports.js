@@ -44,7 +44,7 @@ router.get('/', [
     }
 
     const pipeline = [
-      { $match: matchStage },
+      { $match: { ...matchStage, parentReport: null } }, // Only fetch parents
       // Add weight for severity sorting
       {
         $addFields: {
@@ -61,10 +61,39 @@ router.get('/', [
           }
         }
       },
+      // Lookup Children
+      {
+        $lookup: {
+          from: 'problemreports',
+          localField: '_id',
+          foreignField: 'parentReport',
+          as: 'childReports'
+        }
+      },
+      // Aggregate Children Data
+      {
+        $addFields: {
+          clusterCount: { $add: [{ $size: "$childReports" }, 1] }, // self + children
+          totalVotes: { 
+            $add: [
+              "$votes", 
+              { $ifNull: [{ $sum: "$childReports.votes" }, 0] }
+            ] 
+          },
+          // Merge images: Parent images + Flattened Child images
+          allImages: {
+             $concatArrays: [ "$images", { $reduce: {
+                input: "$childReports.images",
+                initialValue: [],
+                in: { $concatArrays: ["$$value", "$$this"] }
+             }}]
+          }
+        }
+      },
       { $sort: sortStage },
       { $skip: skip },
       { $limit: limit },
-      // Populate reportedBy (manual lookup for aggregation)
+      // Populate reportedBy
       {
         $lookup: {
           from: 'users',
@@ -74,43 +103,7 @@ router.get('/', [
           as: 'reportedBy'
         }
       },
-      { $unwind: { path: '$reportedBy', preserveNullAndEmptyArrays: true } },
-      // Duplicate Detection: Count similar reports nearby (~100m)
-      {
-        $lookup: {
-          from: 'problemreports',
-          let: { 
-            currentLat: "$location.coordinates.lat", 
-            currentLng: "$location.coordinates.lng", 
-            currentCat: "$category", 
-            currentId: "$_id" 
-          },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ["$category", "$$currentCat"] },
-                    { $ne: ["$_id", "$$currentId"] },
-                    // Simple bounding box check (approx 100-111m)
-                    { $lt: [{ $abs: { $subtract: ["$location.coordinates.lat", "$$currentLat"] } }, 0.001] },
-                    { $lt: [{ $abs: { $subtract: ["$location.coordinates.lng", "$$currentLng"] } }, 0.001] }
-                  ]
-                }
-              }
-            },
-            { $count: "count" }
-          ],
-          as: "similarReports"
-        }
-      },
-      {
-        $addFields: {
-          similarReportCount: { 
-            $ifNull: [{ $arrayElemAt: ["$similarReports.count", 0] }, 0] 
-          }
-        }
-      }
+      { $unwind: { path: '$reportedBy', preserveNullAndEmptyArrays: true } }
     ];
 
     const reports = await ProblemReport.aggregate(pipeline);
@@ -150,6 +143,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create new report
+// Create new report
 router.post('/', auth, upload.single('image'), [
   body('title').trim().isLength({ min: 5 }).withMessage('Title must be at least 5 characters'),
   body('description').trim().isLength({ min: 10 }).withMessage('Description must be at least 10 characters'),
@@ -164,6 +158,22 @@ router.post('/', auth, upload.single('image'), [
       return res.status(400).json({ errors: errors.array() });
     }
 
+    const { category, lat, lng } = req.body;
+    const coordinates = { lat: parseFloat(lat), lng: parseFloat(lng) };
+
+    // Check for clustering (duplicate within 100m)
+    const existingParent = await ProblemReport.findOne({
+      category: category,
+      status: { $in: ['open', 'in-progress'] },
+      parentReport: null,
+      $expr: {
+        $and: [
+          { $lt: [{ $abs: { $subtract: ["$location.coordinates.lat", coordinates.lat] } }, 0.001] },
+          { $lt: [{ $abs: { $subtract: ["$location.coordinates.lng", coordinates.lng] } }, 0.001] }
+        ]
+      }
+    });
+
     const reportData = {
         title: req.body.title,
         description: req.body.description,
@@ -171,19 +181,24 @@ router.post('/', auth, upload.single('image'), [
         severity: req.body.severity,
         status: req.body.status || 'open',
         location: {
-            coordinates: {
-                lat: parseFloat(req.body.lat),
-                lng: parseFloat(req.body.lng)
-            },
+            coordinates: coordinates,
             address: req.body.address
         },
         reportedBy: req.user._id,
-        images: req.file ? [`/uploads/${req.file.filename}`] : []
+        images: req.file 
+          ? [`data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`] 
+          : [],
+        parentReport: existingParent ? existingParent._id : null
     };
 
     const report = new ProblemReport(reportData);
 
     await report.save();
+    
+    // If clustered, assume the user also "votes" for the parent implicitly? 
+    // The requirement says "summation". We will handle summation in GET.
+    // Ideally, we could also add the user to parent's voters, but let's keep it clean via aggregation.
+
     await report.populate('reportedBy', 'username');
 
     res.status(201).json(report);
@@ -233,6 +248,48 @@ router.delete('/:id', auth, async (req, res) => {
 
     await report.deleteOne();
     res.json({ message: 'Report deleted' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Maintenance: Retroactively cluster existing reports
+router.get('/maintenance/cluster', async (req, res) => {
+  try {
+    const reports = await ProblemReport.find({
+      status: { $in: ['open', 'in-progress'] },
+      parentReport: null
+    });
+
+    let clusteredCount = 0;
+
+    for (const parent of reports) {
+      if (!parent.location || !parent.location.coordinates) continue;
+
+      const children = await ProblemReport.find({
+        _id: { $ne: parent._id },
+        category: parent.category,
+        status: { $in: ['open', 'in-progress'] },
+        parentReport: null,
+        $expr: {
+          $and: [
+            { $lt: [{ $abs: { $subtract: ["$location.coordinates.lat", parent.location.coordinates.lat] } }, 0.002] }, // Increased to ~200m for easier grouping
+            { $lt: [{ $abs: { $subtract: ["$location.coordinates.lng", parent.location.coordinates.lng] } }, 0.002] }
+          ]
+        }
+      });
+
+      if (children.length > 0) {
+        for (const child of children) {
+          child.parentReport = parent._id;
+          await child.save();
+          clusteredCount++;
+        }
+      }
+    }
+
+    res.json({ message: `Clustering complete. Grouped ${clusteredCount} reports.` });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });

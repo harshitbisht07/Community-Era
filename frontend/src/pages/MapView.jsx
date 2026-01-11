@@ -361,6 +361,7 @@ const MapView = () => {
       {showForm && selectedLocation && (
         <ReportForm
           location={selectedLocation}
+          reports={reports}
           onClose={() => {
             setShowForm(false);
             setSelectedLocation(null);

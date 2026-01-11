@@ -15,13 +15,17 @@ import {
   FiSearch,
   FiChevronLeft,
   FiChevronRight,
+  FiX,
+  FiMessageSquare,
 } from "react-icons/fi";
 import SkeletonLoader from "../components/SkeletonLoader";
 import StatusPill from "../components/StatusPill";
+import CommentSection from "../components/CommentSection";
 
 const Reports = () => {
   // Data State
   const [reports, setReports] = useState([]);
+  const [expandedComments, setExpandedComments] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Filter & Pagination State
@@ -30,6 +34,7 @@ const Reports = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [selectedCluster, setSelectedCluster] = useState(null);
 
   const { user } = useAuthContext();
   const navigate = useNavigate();
@@ -115,28 +120,37 @@ const Reports = () => {
   const handleVote = async (reportId) => {
     if (!user) return alert("Please login to vote");
 
+    const report = reports.find((r) => r._id === reportId);
+    if (!report) return;
+
+    const userId = user._id || user.id;
+    // Check if user has voted using more robust ID comparison
+    const isVoted = report.voters.some((v) => (v._id || v) === userId);
+
     // Optimistic Update
     setReports((prev) =>
       prev.map((r) => {
         if (r._id !== reportId) return r;
-        const isVoted = r.voters.some((v) => (v._id || v) === user.id);
         return {
           ...r,
-          votes: isVoted ? r.votes - 1 : r.votes + 1,
+          votes: isVoted ? Math.max(0, r.votes - 1) : r.votes + 1,
           voters: isVoted
-            ? r.voters.filter((v) => (v._id || v) !== user.id)
-            : [...r.voters, { _id: user.id }],
+            ? r.voters.filter((v) => (v._id || v) !== userId)
+            : [...r.voters, { _id: userId }],
         };
       })
     );
 
     try {
-      const hasVoted = await axios.get(`/api/votes/check/${reportId}`);
-      if (hasVoted.data.hasVoted) await axios.delete(`/api/votes/${reportId}`);
-      else await axios.post("/api/votes", { reportId });
+      if (isVoted) {
+        await axios.delete(`/api/votes/${reportId}`);
+      } else {
+        await axios.post("/api/votes", { reportId });
+      }
     } catch (error) {
+      console.error("Vote failed", error);
       alert("Failed to vote");
-      fetchReports();
+      fetchReports(); // Revert on error
     }
   };
 
@@ -265,9 +279,11 @@ const Reports = () => {
             >
               {/* Image */}
               <div className="w-full md:w-56 h-56 md:h-auto shrink-0 relative overflow-hidden rounded-xl bg-gray-100 border border-gray-50">
-                {report.images?.[0] ? (
+                {report.allImages?.[0] || report.images?.[0] ? (
                   <img
-                    src={resolveImage(report.images[0])}
+                    src={resolveImage(
+                      report.allImages?.[0] || report.images[0]
+                    )}
                     alt={report.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
@@ -275,6 +291,11 @@ const Reports = () => {
                   <div className="w-full h-full flex flex-col items-center justify-center text-gray-300 bg-gray-50">
                     <FiCamera size={32} className="mb-2" />
                     <span className="text-xs font-semibold">No Image</span>
+                  </div>
+                )}
+                {report.clusterCount > 1 && (
+                  <div className="absolute top-2 right-2 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-lg shadow-md z-10">
+                    +{report.clusterCount - 1} More
                   </div>
                 )}
               </div>
@@ -287,6 +308,18 @@ const Reports = () => {
                     <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200 capitalize">
                       {report.category}
                     </span>
+                    {report.clusterCount > 1 && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedCluster(report);
+                        }}
+                        className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-purple-100 text-purple-600 border border-purple-200 flex items-center gap-1 hover:bg-purple-200 transition-colors cursor-pointer"
+                      >
+                        <FiTrendingUp className="text-[10px]" />
+                        {report.clusterCount} Reports
+                      </button>
+                    )}
                   </div>
                   <div className="text-right">
                     <div className="text-xs font-medium text-gray-400 flex items-center justify-end gap-1">
@@ -330,21 +363,49 @@ const Reports = () => {
                       handleVote(report._id);
                     }}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all active:scale-95 z-10 ${
-                      report.voters?.some((v) => (v._id || v) === user?.id)
+                      report.voters?.some(
+                        (v) => (v._id || v) === (user?._id || user?.id)
+                      )
                         ? "bg-blue-600 text-white shadow-md shadow-blue-200"
                         : "bg-gray-50 text-gray-600 hover:bg-white hover:border-gray-200 hover:shadow border border-transparent"
                     }`}
                   >
                     <FiThumbsUp
                       className={
-                        report.voters?.some((v) => (v._id || v) === user?.id)
+                        report.voters?.some(
+                          (v) => (v._id || v) === (user?._id || user?.id)
+                        )
                           ? "fill-current"
                           : ""
                       }
                     />
-                    {report.votes || 0}
+                    {report.totalVotes !== undefined
+                      ? report.totalVotes
+                      : report.votes || 0}
+                  </button>
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setExpandedComments((prev) =>
+                        prev.includes(report._id)
+                          ? prev.filter((id) => id !== report._id)
+                          : [...prev, report._id]
+                      );
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold bg-gray-50 text-gray-600 hover:bg-white hover:border-gray-200 hover:shadow border border-transparent transition-all active:scale-95 z-10"
+                  >
+                    <FiMessageSquare />
+                    Discuss
                   </button>
                 </div>
+
+                {/* Comment Section */}
+                {expandedComments.includes(report._id) && (
+                  <div onClick={(e) => e.stopPropagation()}>
+                    <CommentSection reportId={report._id} />
+                  </div>
+                )}
               </div>
             </div>
           ))}
@@ -373,6 +434,78 @@ const Reports = () => {
           </div>
         )}
       </div>
+      {/* Cluster Details Modal */}
+      {selectedCluster && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[3000] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="p-5 border-b flex items-center justify-between bg-gray-50">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">
+                  Cluster Details
+                </h2>
+                <p className="text-sm text-gray-500">
+                  This issue has been reported {selectedCluster.clusterCount}{" "}
+                  times
+                </p>
+              </div>
+              <button
+                onClick={() => setSelectedCluster(null)}
+                className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+              >
+                <FiX size={20} />
+              </button>
+            </div>
+
+            <div className="overflow-y-auto p-6 space-y-6 bg-gray-50/50">
+              {[selectedCluster, ...(selectedCluster.childReports || [])].map(
+                (r, i) => (
+                  <div
+                    key={r._id || i}
+                    className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm"
+                  >
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex gap-2">
+                        {i === 0 && (
+                          <span className="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                            Primary
+                          </span>
+                        )}
+                        <span className="text-xs font-medium text-gray-500">
+                          {new Date(r.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <StatusPill status={r.status} />
+                    </div>
+                    <h4 className="font-bold text-gray-900 mb-1">{r.title}</h4>
+                    <p className="text-gray-600 text-sm mb-3">
+                      {r.description}
+                    </p>
+
+                    {/* Individual Image */}
+                    {(r.images?.[0] ||
+                      (i === 0 && selectedCluster.images?.[0])) && (
+                      <img
+                        src={resolveImage(
+                          r.images?.[0] ||
+                            (i === 0 && selectedCluster.images?.[0])
+                        )}
+                        alt="Evidence"
+                        className="w-full h-48 object-cover rounded-lg bg-gray-100"
+                      />
+                    )}
+
+                    <div className="mt-4 flex items-center gap-4 text-xs text-gray-400">
+                      <span className="flex items-center gap-1">
+                        <FiUser /> {r.reportedBy?.username || "Unknown"}
+                      </span>
+                    </div>
+                  </div>
+                )
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

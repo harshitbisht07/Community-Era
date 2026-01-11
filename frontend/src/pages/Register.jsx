@@ -187,8 +187,7 @@ const Register = () => {
                   htmlFor="city"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  City{" "}
-                  <span className="text-gray-400 font-normal">(Optional)</span>
+                  City
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -198,6 +197,7 @@ const Register = () => {
                     id="city"
                     name="city"
                     type="text"
+                    required
                     className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
                     placeholder="City"
                     value={formData.city}

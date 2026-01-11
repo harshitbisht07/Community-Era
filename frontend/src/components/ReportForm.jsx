@@ -22,28 +22,8 @@ const ReportForm = ({ location, onClose, onSubmitted, reports }) => {
     e.preventDefault();
     setError("");
 
-    // --- 1. SAME CATEGORY DUPLICACY CHECK (50M) ---
-    const isCategoryDuplicate = reports.some((r) => {
-      const reportPos = L.latLng(
-        r.location.coordinates.lat,
-        r.location.coordinates.lng
-      );
-      const clickPos = L.latLng(location.lat, location.lng);
-      const distance = clickPos.distanceTo(reportPos);
-
-      // Check if distance is < 50m AND it's the same category
-      return (
-        distance < 50 &&
-        r.category.toLowerCase() === formData.category.toLowerCase()
-      );
-    });
-
-    if (isCategoryDuplicate) {
-      setError(
-        `A report for "${formData.category}" already exists in this 50m area.`
-      );
-      return;
-    }
+    // --- 1. SAME CATEGORY DUPLICACY CHECK REMOVED ---
+    // We now allow submission so the backend can cluster these reports together.
 
     setLoading(true);
 

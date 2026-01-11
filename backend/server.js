@@ -8,13 +8,13 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use('/uploads', express.static('uploads'));
 
 // Routes
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/reports", require("./routes/reports"));
 app.use("/api/votes", require("./routes/votes"));
 app.use("/api/participation", require("./routes/participation"));
+app.use("/api/comments", require("./routes/comments"));
 app.use("/api/projects", require("./routes/projects"));
 app.use("/api/admin", require("./routes/adminUsers"));
 

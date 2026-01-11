@@ -18,6 +18,7 @@ router.post(
     body("password")
       .isLength({ min: 6 })
       .withMessage("Password must be at least 6 characters"),
+    body("location.city").notEmpty().withMessage("City is required"),
   ],
   async (req, res) => {
     try {
@@ -45,7 +46,7 @@ router.post(
       await user.save();
 
       // Generate token
-      const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || "fallback-secret", {
         expiresIn: "7d",
       });
 

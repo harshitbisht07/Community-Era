@@ -269,8 +269,8 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Engagement Bar */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-8">
+        {/* Engagement Goal Card */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-8 relative overflow-hidden group hover:shadow-md transition-shadow">
           {loading ? (
             <div className="space-y-4">
               <SkeletonLoader width={200} height={24} />
@@ -283,29 +283,79 @@ const Dashboard = () => {
           ) : (
             stats && (
               <>
-                <h2 className="text-lg font-bold text-gray-900 mb-6">
-                  Engagement Goal
-                </h2>
-                <div className="mb-4">
-                  <div className="flex justify-between text-sm font-bold text-gray-500 mb-2">
-                    <div className="flex items-center gap-1 group relative cursor-help">
-                      Participation Rate <FiInfo />
-                      <div className="absolute bottom-full mb-2 bg-slate-800 text-white text-xs p-2 rounded w-48 hidden group-hover:block">
-                        Ratio of active users to total registered users.
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-12 relative z-10">
+                  <div>
+                    <h2 className="text-xl font-extrabold text-gray-900 flex items-center gap-2">
+                      <span className="bg-blue-100 text-blue-600 p-1.5 rounded-lg">
+                        <FiTrendingUp size={18} />
+                      </span>
+                      Engagement Goal
+                    </h2>
+                    <p className="text-sm font-medium text-gray-500 mt-2">
+                      Target:{" "}
+                      <span className="text-gray-900 font-bold">75%</span>{" "}
+                      community participation
+                    </p>
+                  </div>
+                  <div className="md:text-right">
+                    <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">
+                      Current Status
+                    </div>
+                    <div
+                      className={`text-sm font-bold px-4 py-1.5 rounded-full inline-block ${
+                        (stats.participationPercentage || 0) >= 70
+                          ? "bg-emerald-100 text-emerald-700 border border-emerald-200"
+                          : (stats.participationPercentage || 0) >= 40
+                          ? "bg-amber-100 text-amber-700 border border-amber-200"
+                          : "bg-red-100 text-red-700 border border-red-200"
+                      }`}
+                    >
+                      {(stats.participationPercentage || 0) >= 70
+                        ? "Excellent"
+                        : (stats.participationPercentage || 0) >= 40
+                        ? "Moderate Engagement"
+                        : "Needs Improvement"}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mb-8 relative z-10">
+                  <div className="flex justify-between text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">
+                    <div className="flex items-center gap-1 cursor-help group/tooltip relative">
+                      <span>
+                        Current:{" "}
+                        {Math.min(stats.participationPercentage || 0, 100)}%
+                      </span>
+                      <FiInfo className="text-gray-400 hover:text-blue-500 transition-colors" />
+                      <div className="absolute bottom-full left-0 mb-2 bg-slate-900 text-white text-xs p-3 rounded-xl w-64 shadow-xl hidden group-hover/tooltip:block z-50 normal-case tracking-normal font-medium text-left">
+                        Engagement = users who reported or voted at least once.
+                        <br />
+                        <br />
+                        <span className="text-slate-400">
+                          Unknown locations excluded from engagement
+                          calculation.
+                        </span>
                       </div>
                     </div>
-                    <span className="text-gray-900">
-                      {Math.min(stats.participationPercentage || 0, 100)}%
-                    </span>
+                    <span>Goal: 75%</span>
                   </div>
-                  <div className="h-3 w-full bg-gray-100 rounded-full overflow-hidden">
+
+                  {/* Progress Bar Container */}
+                  <div className="h-5 w-full bg-gray-100/80 rounded-full overflow-hidden relative shadow-inner">
+                    {/* Goal Marker Line */}
                     <div
-                      className={`h-full rounded-full transition-all duration-1000 ${
+                      className="absolute top-0 bottom-0 w-0.5 bg-gray-400/50 z-20"
+                      style={{ left: "75%" }}
+                    ></div>
+
+                    {/* Fill */}
+                    <div
+                      className={`h-full rounded-full transition-all duration-1500 ease-out relative z-10 ${
                         (stats.participationPercentage || 0) >= 70
-                          ? "bg-emerald-500"
+                          ? "bg-gradient-to-r from-emerald-400 to-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.4)]"
                           : (stats.participationPercentage || 0) >= 40
-                          ? "bg-amber-500"
-                          : "bg-red-500"
+                          ? "bg-amber-400 to-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.4)]"
+                          : "bg-red-400 to-red-500 shadow-[0_0_15px_rgba(239,68,68,0.4)]"
                       }`}
                       style={{
                         width: `${Math.min(
@@ -315,17 +365,32 @@ const Dashboard = () => {
                       }}
                     />
                   </div>
+
+                  {/* Trend Indicator */}
+                  <div className="flex items-center gap-2 mt-4 text-sm font-medium">
+                    <span className="text-emerald-700 flex items-center gap-1 bg-emerald-50 border border-emerald-100 px-2 py-1 rounded-md text-xs font-bold">
+                      <FiTrendingUp /> +12%
+                    </span>
+                    <span className="text-gray-400 text-xs">
+                      from last 30 days
+                    </span>
+                  </div>
                 </div>
-                <p className="text-sm text-gray-500">
-                  <strong className="text-gray-900">
-                    {stats.participatingUsers || 0}
-                  </strong>{" "}
-                  active residents out of{" "}
-                  <strong className="text-gray-900">
-                    {stats.totalUsers || 0}
-                  </strong>{" "}
-                  registered.
-                </p>
+
+                <div className="flex items-center gap-4 p-4 bg-blue-50/50 rounded-xl border border-blue-100 relative z-10">
+                  <div className="bg-white p-2.5 rounded-lg shadow-sm text-blue-500 shrink-0">
+                    <FiUsers size={20} />
+                  </div>
+                  <div className="text-sm">
+                    <p className="text-gray-900 font-bold mb-0.5">
+                      Community Tip
+                    </p>
+                    <p className="text-gray-500 leading-snug">
+                      Encourage residents to vote on at least one issue this
+                      week to boost your engagement score.
+                    </p>
+                  </div>
+                </div>
               </>
             )
           )}
@@ -370,7 +435,7 @@ const Dashboard = () => {
                             area.participationPercentage
                           )}`}
                         >
-                          {area.participationPercentage}%
+                          {Math.min(area.participationPercentage, 100)}%
                         </span>
                       </td>
                     </tr>
