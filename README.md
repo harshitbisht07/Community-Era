@@ -14,7 +14,7 @@
 [https://community-era.onrender.com](https://community-era.onrender.com)
 
 ## Demo Video
-https://drive.google.com/file/d/1nO5D2nl37Tul0TQMxZkuH_VOyD7iz05z/view?pli=1
+https://github.com/user-attachments/assets/2047e0bf-d502-477f-8077-2e6d929c481f
 
 ---
 
