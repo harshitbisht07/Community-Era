@@ -40,6 +40,11 @@ const problemReportSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
+  parentReport: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ProblemReport',
+    default: null
+  },
   votes: {
     type: Number,
     default: 0

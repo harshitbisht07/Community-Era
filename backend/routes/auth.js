@@ -18,6 +18,7 @@ router.post(
     body("password")
       .isLength({ min: 6 })
       .withMessage("Password must be at least 6 characters"),
+    body("location.city").notEmpty().withMessage("City is required"),
   ],
   async (req, res) => {
     try {
