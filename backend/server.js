@@ -27,8 +27,8 @@ app.get("/api/health", (req, res) => {
 
 // Serve frontend in production
 if (process.env.NODE_ENV === 'production') {
-  // Set static folder
-  app.use(express.static(path.join(__dirname, '../frontend/build')));
+  // Set static folder with caching
+  app.use(express.static(path.join(__dirname, '../frontend/build'), { maxAge: '1y' }));
 
   // Any other route -> index.html
   app.get('*', (req, res) => {

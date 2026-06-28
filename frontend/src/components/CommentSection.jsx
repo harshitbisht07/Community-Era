@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FiSend, FiMessageSquare, FiUser } from "react-icons/fi";
+import { FiSend, FiMessageSquare } from "react-icons/fi";
 import { useAuthContext } from "../context/useAuthContext";
 
 const CommentSection = ({ reportId, onAuthRequired }) => {
@@ -14,6 +14,7 @@ const CommentSection = ({ reportId, onAuthRequired }) => {
   // Fetch comments
   useEffect(() => {
     fetchComments();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reportId]);
 
   const fetchComments = async () => {

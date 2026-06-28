@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FiX, FiAlertTriangle, FiImage } from "react-icons/fi";
-import L from "leaflet";
+
 
 const ReportForm = ({ location, onClose, onSubmitted, reports }) => {
   const [formData, setFormData] = useState({

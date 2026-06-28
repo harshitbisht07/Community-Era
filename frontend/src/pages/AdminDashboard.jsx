@@ -1,15 +1,10 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuthContext } from "../context/useAuthContext";
 import {
-  FiUsers,
-  FiFileText,
-  FiCheck,
-  FiX,
   FiTrash2,
   FiRefreshCw,
   FiShield,
-  FiAlertCircle,
   FiFilter,
   FiEyeOff,
   FiCheckCircle,
@@ -17,7 +12,6 @@ import {
   FiChevronLeft,
   FiChevronRight,
   FiClock,
-  FiActivity,
 } from "react-icons/fi";
 import SkeletonLoader from "../components/SkeletonLoader";
 
@@ -60,23 +54,7 @@ const ConfirmationModal = ({
   );
 };
 
-const StatusPill = ({ status }) => {
-  const styles = {
-    open: "bg-red-50 text-red-700",
-    "in-progress": "bg-amber-50 text-amber-700",
-    resolved: "bg-emerald-50 text-emerald-700",
-    closed: "bg-gray-50 text-gray-600",
-  };
-  return (
-    <span
-      className={`px-2.5 py-0.5 rounded-full text-xs font-medium uppercase tracking-wider ${
-        styles[status] || styles.closed
-      }`}
-    >
-      {status}
-    </span>
-  );
-};
+// StatusPill removed as unused
 
 // --- Main Page ---
 
@@ -90,7 +68,7 @@ const AdminDashboard = () => {
 
   // Loading States
   const [dataLoading, setDataLoading] = useState(false);
-  const [btnLoading, setBtnLoading] = useState(false);
+  // btnLoading removed as unused
 
   // Pagination & Search
   const [pagination, setPagination] = useState({
@@ -135,6 +113,7 @@ const AdminDashboard = () => {
     if (!loading && user && user.role === "admin") {
       refreshData();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, loading, activeTab, filters, pagination.page, debouncedSearch]);
 
   const refreshData = () => {
@@ -221,15 +200,12 @@ const AdminDashboard = () => {
       `Are you sure you want to change ${u.username}'s role?`,
       async () => {
         try {
-          setBtnLoading(true);
           await axios.patch(`/api/admin/users/${u._id}/role`, {
             role: newRole,
           });
           fetchUsers();
         } catch (err) {
           alert("Failed to update role");
-        } finally {
-          setBtnLoading(false);
         }
       }
     );
@@ -303,7 +279,6 @@ const AdminDashboard = () => {
     if (selectedRepIds.size === 0) return;
     const execute = async () => {
       try {
-        setBtnLoading(true);
         const promises = Array.from(selectedRepIds).map((id) => {
           if (actionType === "delete")
             return axios.delete(`/api/reports/${id}`);
@@ -313,14 +288,13 @@ const AdminDashboard = () => {
             return axios.patch(`/api/reports/${id}`, { isApproved: false });
           if (actionType === "resolve")
             return axios.patch(`/api/reports/${id}`, { status: "resolved" });
+          return null;
         });
         await Promise.all(promises);
         fetchReports();
         setSelectedRepIds(new Set());
       } catch {
         alert("Bulk action failed");
-      } finally {
-        setBtnLoading(false);
       }
     };
 

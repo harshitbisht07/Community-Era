@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FiMap, FiBarChart2, FiGrid, FiHome } from "react-icons/fi";
+
 
 const Footer = () => {
   return (

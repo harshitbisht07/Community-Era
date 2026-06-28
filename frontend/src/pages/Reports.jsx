@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import {
   FiThumbsUp,
   FiMapPin,
-  FiAlertCircle,
   FiClock,
   FiFilter,
   FiArrowDown,
@@ -53,6 +52,7 @@ const Reports = () => {
   // Fetch Logic
   useEffect(() => {
     fetchReports();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter, page, debouncedSearch]);
 
   // Geolocation

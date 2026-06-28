@@ -7,16 +7,9 @@
 [![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3.3-blue.svg)](https://tailwindcss.com/)
 
 > **A community-driven infrastructure monitoring platform for transparent governance and citizen engagement**
+> **Live Link:** [https://community-era.onrender.com](https://community-era.onrender.com)
 
----
 
-## 🌐 Live Demo
-[https://community-era.onrender.com](https://community-era.onrender.com)
-
-## Demo Video
-https://github.com/user-attachments/assets/2047e0bf-d502-477f-8077-2e6d929c481f
-
----
 
 **Community Era** empowers citizens to report, prioritize, and track local infrastructure issues, bridging the gap between communities and authorities. The project takes a messy, frustrating real-world problem—infrastructure neglect—and turns it into a streamlined, visual, and collaborative process.
 

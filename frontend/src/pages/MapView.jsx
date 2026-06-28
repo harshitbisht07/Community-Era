@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import {
   MapContainer,
@@ -17,11 +17,7 @@ import {
   FiMapPin,
   FiSearch,
   FiX,
-  FiActivity,
-  FiThumbsUp,
   FiCheckCircle,
-  FiClock,
-  FiFilter,
 } from "react-icons/fi";
 
 // LEAFLET CONFIG
@@ -36,13 +32,6 @@ L.Icon.Default.mergeOptions({
 });
 
 // COLORS & ICONS
-const CATEGORY_COLORS = {
-  road: "#ef4444",
-  water: "#3b82f6",
-  electricity: "#eab308",
-  sanitation: "#22c55e",
-  other: "#6b7280",
-};
 const STATUS_COLORS = {
   open: "#ef4444",
   "in-progress": "#f59e0b",
@@ -165,21 +154,6 @@ const MapView = () => {
   }, [searchQuery]);
 
   // Handlers
-  const handleLocationSelect = (lat, lon, displayName) => {
-    setSearchQuery(displayName);
-    setSuggestions([]);
-    // We need access to map instance here? No, pass prop or use state if possible,
-    // but MapLogic uses useMap. We can't access it here.
-    // Workaround: We force a re-render of MapLogic with new "center" prop?
-    // Actually MapLogic watches "initialCenter". We can update history state or just re-feed it.
-    // Simplest: Just use standard window location or similar hack? No.
-    // Better: Reset initialCenter state prop that is passed to MapLogic.
-    // Actually, let's keep it simple: We won't flyTo here easily without context.
-    // Wait, SearchBar was INSIDE MapContainer before. I moved it OUT to be "Floating".
-    // To control map from outside, we need a ref or context.
-    // Let's put SearchBar back separate but utilize a Ref to map if possible, or keep SearchBar INSIDE MapContainer for easy access but position it absolutely.
-    // Re-embedding SearchBar inside MapContainer is safest for Leaflet control provided we use standard CSS positioning (z-index).
-  };
 
   if (loading)
     return (
