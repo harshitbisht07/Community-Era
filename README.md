@@ -10,6 +10,8 @@
 > **Live Link:** [https://community-era.onrender.com](https://community-era.onrender.com)
 
 
+## 🌐 Live Demo
+[https://community-era.onrender.com](https://community-era.onrender.com)
 
 **Community Era** empowers citizens to report, prioritize, and track local infrastructure issues, bridging the gap between communities and authorities. The project takes a messy, frustrating real-world problem—infrastructure neglect—and turns it into a streamlined, visual, and collaborative process.
 
